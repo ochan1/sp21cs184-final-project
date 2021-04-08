@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    div.padded {
+      padding-top: 0px;
+      padding-right: 100px;
+      padding-bottom: 0.25in;
+      padding-left: 100px;
+    }
+
+    body {
+      width: 1000px;
+      margin: auto;
+      text-align: left;
+    }
+
+    div.padded {
+      padding-top: 0px;
+      padding-right: 100px;
+      padding-bottom: 0.25in;
+      padding-left: 100px;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Roboto Black', 'Arial Black', sans-serif;
+    }
+
+    a {
+      color: blue;
+    }
+  </style>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap" rel="stylesheet">
+  <title>Portals - Final Project Proposal | CS 184</title>
+</head>
+
+<body>
+  <center>
+    <h1>Interactive Real-Time Raytraced GPU-Accelerated Portals with Global Illumination</h1>
+  </center>
+  <h2>Team members</h2>
+  <ul>
+    <li>Mark Lindblad</li>
+    <li>Oscar Chan</li>
+    <li>Ashley Zhang</li>
+    <li>Daniel Molina</li>
+  </ul>
+
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#summary">Summary</a></li>
+    <li><a href="#problemdescription">Problem Description</a></li>
+    <li><a href="#goals">Goals</a></li>
+    <li><a href="#deliverables">Deliverables</a></li>
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+
+  <h2 id="summary">Summary</h2>
+  <p>
+    First, we render an image with portals that show views from different locations in the scene.
+    Then, as a stretch goal, we will make an interactive demo showcasing real-time ray tracing and collisions with
+    portal placing ability using hardware acceleration like Vulkan, CUDA, or OpenGL.
+  </p>
+
+  <h2 id="problemdescription">Problem Description</h2>
+  <p>
+    We want to render the science fiction phenomena of <i>portals</i>.
+    A portal is like an open doorway where the other side leads to 
+    somewhere else. When the camera looks into portal A, the environment 
+    outside of the camera's field of view as seen by portal B is
+    projected onto portal A, which is within the camera's field of view.
+  </p>
+  <p>
+    We hope to accomplish this with raytracing so that effects
+    such as illumination and object rendering from a different place
+    carry over between the portals.
+  </p>
+  <p>
+    In this project, we are mainly interested in experimenting with ray tracing between
+    two scenes, inside and outside the field of view. We also want to examine how
+    illumination from one portal will carry over through the other.
+  </p>
+
+  <!-- TODO: Decide on framework to use after TA meeting on April 6 -->
+  <p>A challenge we will likely face in meeting our initial goal is learning how to
+    use new technologies (e.g. Vulkan, CUDA, OpenCL, or OpenGL)
+    to accelerate raytracing and portals. A difficulty we will face in meeting our
+    stretch goal is learning how to use a game engine to implement a movable character,
+    and implementing real-time raytracing to adapt to the player's changing field of view.
+  </p>
+
+  <h2 id="goals">Goals</h2>
+  <p>
+    Our initial goal for this project is to create an image render of
+    a static scene containing a pair of portals using ray tracing. We will 
+    implement it such that the portals support global illumination where light 
+    that passes through one portal comes out the other portal and lights up the scene.
+  </p>
+  <p>
+    If we have time, our stretch goal is to add the ability to control a character
+    to move around the scene and pass through the portals if possible.
+    Adding character controls would require us to
+    implement real-time raytracing as the character changes the angle
+    and field of view it sees through a portal.
+  </p>
+  <p>
+    We will measure our implementation by its scene rendering speeds at high resolution.
+    We will also be focusing on the quality of the lighting effects and portal perspective
+    passing through one portal and coming out of the other. It should look seamless and 
+    visually appealing.
+  </p>
+  <p>
+    This is achievable because we are building off of the rendering framework of project 3 
+    and we have a clear understanding of how we will represent and render portals.
+  </p>
+  <h2 id="deliverables">Deliverables</h2>
+  <h3>MVP Initial Deliverables</h3>
+  <ul>
+    <li>
+      Create a static renderer that can render a scene with portals.
+      The scene will be encoded as a COLLADA dae extended with a new portal "material".
+    </li>
+    <li>
+      Have a global illumination effect, where the light rays intersecting
+      with a portal will go out through to the other portal and light up the scene.
+    </li>
+    <li>
+      Ensure that the perspective of the scene viewed through a portal is
+      consistent, regardless of camera position or angle relative to the portal.
+    </li>
+    <li>
+      Create a variety of scenes (DAE meshes) containing portals to render images with.
+    </li>
+  </ul>
+  <h3>Stretch Deliverables</h3>
+  <ul>
+    <li>
+      Modify the shape of the portal.
+    </li>
+    <li>
+      Make it real time and interactive by allowing the user to move the camera (or other objects) and pass through the portals.
+    </li>
+    <li>
+      Add the ability place portals wherever in real time.
+    </li>
+  </ul>
+  <h2 id="schedule">Schedule</h2>
+  <h3>Week 1 - Week of April 4, 2021</h3>
+  <p><strong>IMPORTANT DEADLINES:</strong> Proposal Due: Friday April 9th 11:59pm.</p>
+  <ul>
+    <li>
+      Brainstorm how to approach the Portal idea
+    </li>
+    <li>
+      Understand what are stages from the <code>Minimal Viable Product (MVP)</code>
+      to advanced goals for our project
+    </li>
+    <li>
+      Agree on timeline goals for project
+    </li>
+    <li>Determine what tools we are going to use (Vulkan, CUDA, Unity, etc.)</li>
+  </ul>
+  <p></p>
+  <h3>Week 2 - Week of April 11, 2021</h3>
+  <p>
+    <strong>IMPORTANT DEADLINES:</strong> Proposal Revisions Sent,
+    Project Start: Tuesday April 13th, by EOD.
+  </p>
+  <ul>
+    <li>Design project starter code, with mindset to potentially incorporate chosen tools</li>
+    <li>Create project starter code</li>
+    <li>Incorporate portal "material" into mesh reader</li>
+    <li>Ability for camera rays to render and raytrace to the other portal</li>
+    <li>Create simple DAE with portals to test code</li>
+  </ul>
+  <h3>Week 3 - Week of April 18, 2021</h3>
+  <p></p>
+  <ul>
+    <li>Complete or make very siginificant progress on MVP</li>
+    <!-- TODO: Revisit after TA and Proposal comments -->
+    <li>Revisit Schedule for milestones that have been met</li>
+    <li>Start on Milestone for a startup report, to be edited as more progress made</li>
+    <ul>
+      <li>Written Report (1 page printed)</li>
+      <li>Milestone Video (short 1-minute)</li>
+      <li>Presentation Slides (2-3 slides)</li>
+    </ul>
+  </ul>
+  <h3>Week 4 - Week of April 25, 2021</h3>
+  <p><strong>IMPORTANT DEADLINES:</strong> Graded Milestone Due: Tuesday April 27th 11:59pm.</p>
+  <ul>
+    <li>Finalize Milestone deliverables</li>
+    <li>
+      Start on stretch goals, like incorporating interactivity with scene and
+      custom portal placements and accelerating raytracing
+    </li>
+    <li>Convert project objects to Game Engine objects, if possible</li>
+  </ul>
+  <h3>Week 5 - Week of May 2, 2021</h3>
+  <p><strong>IMPORTANT DEADLINES:</strong> Final Presentations: Thursday May 6th.</p>
+  <ul>
+    <li>
+      Wrap up milestone project on Sunday
+    </li>
+    <li>
+      Start on slides of projects on Monday!
+    </li>
+  </ul>
+  <h3>Week 6 - Week of May 9, 2021</h3>
+  <p><strong>IMPORANT DEADLINE - DUE DATE:</strong> Final Deliverables Due: Tuesday May 11, 11:59pm.
+  <ul>
+    <li>
+      Final Project Video
+    </li>
+    <li>Final Report Webpage (Academic paper style)</li>
+  </ul>
+  <h2 id="resources">Resources</h2>
+  <!-- Done: List of resources, platform, software, and hardware we will be using-->
+  <p>Knowledge resources:</p>
+  <ul>
+    <li><a href="https://theportalwiki.com/wiki/Portal_developer_commentary">Portal developer's commentary</a></li>
+    <li><a href="https://www.youtube.com/watch?v=_SmPR5mvH7w">YouTube video by DigiDigger on how portal effects can be
+        recreated in Unity 3D game engine</a></li>
+    <li><a href="https://www.youtube.com/watch?v=kyL2rj_Se3M&ab_channel=TAUVOD">YouTube conference lectures on Nvidia
+        CUDA</a></li>
+  </ul>
+  <p>Software & hardware:</p>
+  <ul>
+    <li>CGL framework from Project 3</li>
+    <li>Languages: C++ and Vulkan</li>
+    <li>Hive machines or a Computer with a Radeon or NVIDIA for Vulkan</li>
+  </ul>
+</body>
+</html>
