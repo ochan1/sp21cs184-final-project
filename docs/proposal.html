@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <style>
     div.padded {
@@ -46,7 +47,7 @@
   </center>
   <h2>Team members</h2>
   <ul>
-    <li>Mark Lindblad</li>
+    <li>Raymond Chau</li>
     <li>Oscar Chan</li>
     <li>Ashley Zhang</li>
     <li>Daniel Molina</li>
@@ -66,14 +67,14 @@
   <p>
     First, we render an image with portals that show views from different locations in the scene.
     Then, as a stretch goal, we will make an interactive demo showcasing real-time ray tracing and collisions with
-    portal placing ability using hardware acceleration like Vulkan, CUDA, or OpenGL.
+    portal placing ability using a game engine like Unity.
   </p>
 
   <h2 id="problemdescription">Problem Description</h2>
   <p>
     We want to render the science fiction phenomena of <i>portals</i>.
-    A portal is like an open doorway where the other side leads to 
-    somewhere else. When the camera looks into portal A, the environment 
+    A portal is like an open doorway where the other side leads to
+    somewhere else. When the camera looks into portal A, the environment
     outside of the camera's field of view as seen by portal B is
     projected onto portal A, which is within the camera's field of view.
   </p>
@@ -88,55 +89,48 @@
     illumination from one portal will carry over through the other.
   </p>
 
-  <!-- TODO: Decide on framework to use after TA meeting on April 6 -->
-  <p>A challenge we will likely face in meeting our initial goal is learning how to
-    use new technologies (e.g. Vulkan, CUDA, OpenCL, or OpenGL)
-    to accelerate raytracing and portals. A difficulty we will face in meeting our
-    stretch goal is learning how to use a game engine to implement a movable character,
-    and implementing real-time raytracing to adapt to the player's changing field of view.
+  <!-- Done: Decide on framework to use after TA meeting on April 6 -->
+  <!-- Use Unity, which incorporates graphics card functionality for us -->
+  <p>
+    A challenge we will likely face in meeting our initial goal is learning how to
+    use new technologies (Unity3D) to implement portals.
   </p>
 
   <h2 id="goals">Goals</h2>
   <p>
-    Our initial goal for this project is to create an image render of
-    a static scene containing a pair of portals using ray tracing. We will 
-    implement it such that the portals support global illumination where light 
-    that passes through one portal comes out the other portal and lights up the scene.
+    Our initial goal for this project is to recreate in Unity the visual effect of
+    looking through a portal at another area in the
+    scene, out of view to the player in first person perspective.
+    The player should be able to move around the scene and
+    see the view through the portal update according to the player's position and angle relative to the portal.
   </p>
   <p>
-    If we have time, our stretch goal is to add the ability to control a character
-    to move around the scene and pass through the portals if possible.
-    Adding character controls would require us to
-    implement real-time raytracing as the character changes the angle
-    and field of view it sees through a portal.
+    If we have time, our stretch goal is to add the ability for the player to pass through the portals. The player
+    should transition smoothly between the portals with no sudden jumps or changes in perspective.
   </p>
   <p>
-    We will measure our implementation by its scene rendering speeds at high resolution.
-    We will also be focusing on the quality of the lighting effects and portal perspective
-    passing through one portal and coming out of the other. It should look seamless and 
+    We will focus on the quality of the lighting effects and portal perspective
+    passing through one portal and coming out of the other. It should look seamless and
     visually appealing.
   </p>
-  <p>
-    This is achievable because we are building off of the rendering framework of project 3 
-    and we have a clear understanding of how we will represent and render portals.
-  </p>
+
   <h2 id="deliverables">Deliverables</h2>
   <h3>MVP Initial Deliverables</h3>
   <ul>
     <li>
       Create a static renderer that can render a scene with portals.
-      The scene will be encoded as a COLLADA dae extended with a new portal "material".
+      The scene will be encoded as a COLLADA dae with primitives (cubes, spheres).
     </li>
     <li>
       Have a global illumination effect, where the light rays intersecting
-      with a portal will go out through to the other portal and light up the scene.
+      with a portal will through the other portal and light up the scene.
     </li>
     <li>
       Ensure that the perspective of the scene viewed through a portal is
       consistent, regardless of camera position or angle relative to the portal.
     </li>
     <li>
-      Create a variety of scenes (DAE meshes) containing portals to render images with.
+      Create a variety of scenes (DAE meshes and primitives in Unity) containing portals to render images.
     </li>
   </ul>
   <h3>Stretch Deliverables</h3>
@@ -145,7 +139,8 @@
       Modify the shape of the portal.
     </li>
     <li>
-      Make it real time and interactive by allowing the user to move the camera (or other objects) and pass through the portals.
+      Make it real time and interactive by allowing the user to move the camera (or other objects) and pass through the
+      portals.
     </li>
     <li>
       Add the ability place portals wherever in real time.
@@ -165,7 +160,7 @@
     <li>
       Agree on timeline goals for project
     </li>
-    <li>Determine what tools we are going to use (Vulkan, CUDA, Unity, etc.)</li>
+    <li>Determine what tools we are going to use (like Unity)</li>
   </ul>
   <p></p>
   <h3>Week 2 - Week of April 11, 2021</h3>
@@ -176,15 +171,15 @@
   <ul>
     <li>Design project starter code, with mindset to potentially incorporate chosen tools</li>
     <li>Create project starter code</li>
-    <li>Incorporate portal "material" into mesh reader</li>
-    <li>Ability for camera rays to render and raytrace to the other portal</li>
-    <li>Create simple DAE with portals to test code</li>
+    <li>Create portal object/prefab</li>
+    <li>Display portal A's point of view onto portal B</li>
+    <li>Create simple 3D scene in unity for testing</li>
   </ul>
   <h3>Week 3 - Week of April 18, 2021</h3>
   <p></p>
   <ul>
     <li>Complete or make very siginificant progress on MVP</li>
-    <!-- TODO: Revisit after TA and Proposal comments -->
+    <!-- TODO for after Proposal feedback: Revisit after TA and Proposal comments -->
     <li>Revisit Schedule for milestones that have been met</li>
     <li>Start on Milestone for a startup report, to be edited as more progress made</li>
     <ul>
@@ -198,10 +193,8 @@
   <ul>
     <li>Finalize Milestone deliverables</li>
     <li>
-      Start on stretch goals, like incorporating interactivity with scene and
-      custom portal placements and accelerating raytracing
+      Start on stretch goals, like allowing the player to teleport through portals
     </li>
-    <li>Convert project objects to Game Engine objects, if possible</li>
   </ul>
   <h3>Week 5 - Week of May 2, 2021</h3>
   <p><strong>IMPORTANT DEADLINES:</strong> Final Presentations: Thursday May 6th.</p>
@@ -225,17 +218,20 @@
   <!-- Done: List of resources, platform, software, and hardware we will be using-->
   <p>Knowledge resources:</p>
   <ul>
-    <li><a href="https://theportalwiki.com/wiki/Portal_developer_commentary">Portal developer's commentary</a></li>
-    <li><a href="https://www.youtube.com/watch?v=_SmPR5mvH7w">YouTube video by DigiDigger on how portal effects can be
+    <li><a target="_blank" href="https://theportalwiki.com/wiki/Portal_developer_commentary">Portal developer's commentary</a></li>
+    <li><a target="_blank" href="https://www.youtube.com/watch?v=_SmPR5mvH7w">YouTube video by DigiDigger on how portal effects can be
         recreated in Unity 3D game engine</a></li>
-    <li><a href="https://www.youtube.com/watch?v=kyL2rj_Se3M&ab_channel=TAUVOD">YouTube conference lectures on Nvidia
+    <li><a target="_blank" href="https://www.youtube.com/watch?v=kyL2rj_Se3M&ab_channel=TAUVOD">YouTube conference lectures on Nvidia
         CUDA</a></li>
+    <li><a target="_blank" href="https://www.youtube.com/watch?v=cWpFZbjtSQg">Coding Portals Tutorial by Sebastian Lague</a></li>
+    <li><a target="_blank" href="https://www.youtube.com/watch?v=cuQao3hEKfs">Portals in Unity with teleportation</a></li>
   </ul>
   <p>Software & hardware:</p>
   <ul>
-    <li>CGL framework from Project 3</li>
-    <li>Languages: C++ and Vulkan</li>
-    <li>Hive machines or a Computer with a Radeon or NVIDIA for Vulkan</li>
+    <li>Unity 3D 2021.1.0</li>
+    <li>Language: C#</li>
+    <li>Personal computers</li>
   </ul>
 </body>
+
 </html>
