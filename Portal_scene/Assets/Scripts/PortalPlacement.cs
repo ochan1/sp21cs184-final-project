@@ -6,11 +6,13 @@ public class PortalPlacement : MonoBehaviour
 {
     public GameObject portal0;
     public GameObject portal1;
+    
     private GameObject inPortal;
     private GameObject outPortal;
 
     public Camera playerCamera;
-    public Camera portalCamera;
+    public Camera portal1Camera;
+    public Camera portal0Camera;
 
     private void Awake()
     {
@@ -33,9 +35,11 @@ public class PortalPlacement : MonoBehaviour
             FirePortal(portal1, new Color(0.0f, 0.40f, 1.0f));
         }
 
-        SetPortalCamera();
-        UpdatePortalCamera(inPortal, outPortal);
-        ClipPortalCameraView(inPortal, outPortal);
+        // SetPortalCamera();
+        UpdatePortalCamera(portal1Camera, portal0, portal1);
+        ClipPortalCameraView(portal1Camera, portal0, portal1);
+        UpdatePortalCamera(portal0Camera, portal1, portal0);
+        ClipPortalCameraView(portal0Camera, portal1, portal0);
     }
 
     private void FirePortal(GameObject portal, Color color)
@@ -86,13 +90,13 @@ public class PortalPlacement : MonoBehaviour
         }
     }
 
-    private void UpdatePortalCamera(GameObject inPortal, GameObject outPortal) {
+    private void UpdatePortalCamera(Camera portalCamera, GameObject inPortal, GameObject outPortal) {
         Quaternion flip = Quaternion.Euler(0.0f, 180.0f, 0.0f);
         portalCamera.transform.position = outPortal.transform.TransformPoint(flip * inPortal.transform.InverseTransformPoint(playerCamera.transform.position));
         portalCamera.transform.rotation = outPortal.transform.rotation * flip * Quaternion.Inverse(inPortal.transform.rotation) * playerCamera.transform.rotation;
     }
 
-    private void ClipPortalCameraView(GameObject inPortal, GameObject outPortal) {
+    private void ClipPortalCameraView(Camera portalCamera, GameObject inPortal, GameObject outPortal) {
         //credits to Daniel Ilett
         Plane p = new Plane(-outPortal.transform.forward, outPortal.transform.position);
         Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
