@@ -6,11 +6,13 @@ public class PortalPlacement : MonoBehaviour
 {
     public GameObject portal0;
     public GameObject portal1;
+    
     private GameObject inPortal;
     private GameObject outPortal;
 
     public Camera playerCamera;
-    public Camera portalCamera;
+    public Camera portal1Camera;
+    public Camera portal0Camera;
 
     private void Awake()
     {
@@ -18,41 +20,49 @@ public class PortalPlacement : MonoBehaviour
         outPortal = portal1;
     }
 
-    void OnGUI(){
+    void OnGUI() {
         GUI.Box(new Rect(Screen.width/2,Screen.height/2, 10, 10), "");
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            FirePortal(portal0, new Color(1.0f, 0.60f, 0.0f));
+            FirePortal(portal0, portal1, new Color(1.0f, 0.60f, 0.0f));
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            FirePortal(portal1, new Color(0.0f, 0.40f, 1.0f));
+            FirePortal(portal1, portal0, new Color(0.0f, 0.40f, 1.0f));
         }
 
-        SetPortalCamera();
-        UpdatePortalCamera(inPortal, outPortal);
-        ClipPortalCameraView(inPortal, outPortal);
+        // SetPortalCamera();
+        UpdatePortalCamera(portal1Camera, portal0, portal1);
+        ClipPortalCameraView(portal1Camera, portal0, portal1);
+        UpdatePortalCamera(portal0Camera, portal1, portal0);
+        ClipPortalCameraView(portal0Camera, portal1, portal0);
     }
 
-    private void FirePortal(GameObject portal, Color color)
+    private void FirePortal(GameObject portal, GameObject otherPortal, Color color)
     {
         RaycastHit hit;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
         bool collision = Physics.Raycast(ray, out hit);
         
         if (collision) {
-            if (hit.transform.gameObject == portal) {
-                return;
+            
+            if (otherPortal != null) {
+                if (hit.transform.gameObject == otherPortal
+                    || hit.transform.gameObject == otherPortal.transform.GetChild(0).gameObject) {
+                    return;
+                }
             }
+            //
+            
             Transform objectHit = hit.transform;
-            portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
+            // portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
     
             portal.transform.position = hit.point;
-            portal.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
+            portal.transform.rotation = Quaternion.FromToRotation(-Vector3.forward, hit.normal);
             portal.gameObject.SetActive(true);
             
             portal.GetComponent<Renderer>().material.SetColor("_Color", color);
@@ -87,13 +97,13 @@ public class PortalPlacement : MonoBehaviour
         }
     }
 
-    private void UpdatePortalCamera(GameObject inPortal, GameObject outPortal) {
+    private void UpdatePortalCamera(Camera portalCamera, GameObject inPortal, GameObject outPortal) {
         Quaternion flip = Quaternion.Euler(0.0f, 180.0f, 0.0f);
         portalCamera.transform.position = outPortal.transform.TransformPoint(flip * inPortal.transform.InverseTransformPoint(playerCamera.transform.position));
         portalCamera.transform.rotation = outPortal.transform.rotation * flip * Quaternion.Inverse(inPortal.transform.rotation) * playerCamera.transform.rotation;
     }
 
-    private void ClipPortalCameraView(GameObject inPortal, GameObject outPortal) {
+    private void ClipPortalCameraView(Camera portalCamera, GameObject inPortal, GameObject outPortal) {
         //credits to Daniel Ilett
         Plane p = new Plane(-outPortal.transform.forward, outPortal.transform.position);
         Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
