@@ -336,7 +336,6 @@ GameObject:
   m_Component:
   - component: {fileID: 325087061}
   - component: {fileID: 325087063}
-  - component: {fileID: 325087062}
   m_Layer: 0
   m_Name: PortalCamera2
   m_TagString: Untagged
@@ -358,14 +357,6 @@ Transform:
   m_Father: {fileID: 1280794403}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &325087062
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 325087060}
-  m_Enabled: 1
 --- !u!20 &325087063
 Camera:
   m_ObjectHideFlags: 0
@@ -1477,7 +1468,7 @@ GameObject:
   - component: {fileID: 2033123836}
   - component: {fileID: 2033123835}
   m_Layer: 0
-  m_Name: Plane (4)
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

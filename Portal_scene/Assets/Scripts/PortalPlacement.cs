@@ -20,19 +20,19 @@ public class PortalPlacement : MonoBehaviour
         outPortal = portal1;
     }
 
-    void OnGUI(){
+    void OnGUI() {
         GUI.Box(new Rect(Screen.width/2,Screen.height/2, 10, 10), "");
     }
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            FirePortal(portal0, new Color(1.0f, 0.60f, 0.0f));
+            FirePortal(portal0, portal1, new Color(1.0f, 0.60f, 0.0f));
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            FirePortal(portal1, new Color(0.0f, 0.40f, 1.0f));
+            FirePortal(portal1, portal0, new Color(0.0f, 0.40f, 1.0f));
         }
 
         // SetPortalCamera();
@@ -42,16 +42,21 @@ public class PortalPlacement : MonoBehaviour
         ClipPortalCameraView(portal0Camera, portal1, portal0);
     }
 
-    private void FirePortal(GameObject portal, Color color)
+    private void FirePortal(GameObject portal, GameObject otherPortal, Color color)
     {
         RaycastHit hit;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
         bool collision = Physics.Raycast(ray, out hit);
         
         if (collision) {
-            if (hit.transform.gameObject == portal) {
-                return;
+            
+            if (otherPortal != null) {
+                if (hit.transform.gameObject == otherPortal
+                    || hit.transform.gameObject == otherPortal.transform.GetChild(0).gameObject) {
+                    return;
+                }
             }
+            
             Transform objectHit = hit.transform;
     
             portal.transform.position = hit.point;

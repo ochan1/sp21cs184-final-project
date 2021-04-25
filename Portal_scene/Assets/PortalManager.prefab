@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5463777433666439514}
   - component: {fileID: 5463777433666439512}
-  - component: {fileID: 5463777433666439513}
   m_Layer: 0
   m_Name: PortalCamera
   m_TagString: Untagged
@@ -75,14 +74,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &5463777433666439513
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5463777433666439515}
-  m_Enabled: 1
 --- !u!1 &5463777433718499584
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,7 +123,8 @@ MonoBehaviour:
   portal0: {fileID: 5463777434075866886}
   portal1: {fileID: 5463777434466338452}
   playerCamera: {fileID: 0}
-  portalCamera: {fileID: 5463777433666439512}
+  portal1Camera: {fileID: 0}
+  portal0Camera: {fileID: 0}
 --- !u!1 &5463777434075866886
 GameObject:
   m_ObjectHideFlags: 0
