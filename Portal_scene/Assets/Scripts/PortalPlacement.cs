@@ -56,12 +56,13 @@ public class PortalPlacement : MonoBehaviour
                     return;
                 }
             }
+            //
             
             Transform objectHit = hit.transform;
-            portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
+            // portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
     
             portal.transform.position = hit.point;
-            portal.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
+            portal.transform.rotation = Quaternion.FromToRotation(-Vector3.forward, hit.normal);
             portal.gameObject.SetActive(true);
             
             portal.GetComponent<Renderer>().material.SetColor("_Color", color);

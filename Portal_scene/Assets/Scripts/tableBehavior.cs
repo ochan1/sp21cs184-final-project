@@ -19,7 +19,7 @@ public class tableBehavior : MonoBehaviour
         
     }
     void OnCollisionEnter(Collision collision) {
-        Debug.Log(rb.mass);
+        // Debug.Log(rb.mass);
         if(collision.gameObject.tag == "Floor" && !floorHit){
             rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             floorHit = true;
