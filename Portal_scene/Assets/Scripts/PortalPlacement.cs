@@ -69,33 +69,33 @@ public class PortalPlacement : MonoBehaviour
         }
     }
 
-    private void SetPortalCamera() {
-        //set portalcamera to furthest portal
-        Vector3 vec0 = portal0.transform.position - playerCamera.transform.position;
-        Vector3 vec1 = portal1.transform.position - playerCamera.transform.position;
-        float dist0 = (vec0).magnitude;
-        float dist1 = (vec1).magnitude;
-        float theta = Mathf.Cos(Mathf.Deg2Rad * playerCamera.fieldOfView / 2.0f);
+    // private void SetPortalCamera() {
+    //     //set portalcamera to furthest portal
+    //     Vector3 vec0 = portal0.transform.position - playerCamera.transform.position;
+    //     Vector3 vec1 = portal1.transform.position - playerCamera.transform.position;
+    //     float dist0 = (vec0).magnitude;
+    //     float dist1 = (vec1).magnitude;
+    //     float theta = Mathf.Cos(Mathf.Deg2Rad * playerCamera.fieldOfView / 2.0f);
 
-        bool inView0 = Vector3.Dot(playerCamera.transform.forward, vec0) >= theta;
-        bool inView1 = Vector3.Dot(playerCamera.transform.forward, vec1) >= theta;
-        if (inView0 && inView1) {
-            if (dist0 < dist1) {
-                inPortal = portal0;
-                outPortal = portal1;
-            } else {
-                inPortal = portal1;
-                outPortal = portal0;
-            }
-        }
-        else if (inView0) {
-            inPortal = portal0;
-            outPortal = portal1;
-        } else {
-            inPortal = portal1;
-            outPortal = portal0;
-        }
-    }
+    //     bool inView0 = Vector3.Dot(playerCamera.transform.forward, vec0) >= theta;
+    //     bool inView1 = Vector3.Dot(playerCamera.transform.forward, vec1) >= theta;
+    //     if (inView0 && inView1) {
+    //         if (dist0 < dist1) {
+    //             inPortal = portal0;
+    //             outPortal = portal1;
+    //         } else {
+    //             inPortal = portal1;
+    //             outPortal = portal0;
+    //         }
+    //     }
+    //     else if (inView0) {
+    //         inPortal = portal0;
+    //         outPortal = portal1;
+    //     } else {
+    //         inPortal = portal1;
+    //         outPortal = portal0;
+    //     }
+    // }
 
     private void UpdatePortalCamera(Camera portalCamera, GameObject inPortal, GameObject outPortal) {
         Quaternion flip = Quaternion.Euler(0.0f, 180.0f, 0.0f);
