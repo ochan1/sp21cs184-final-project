@@ -62,7 +62,7 @@ public class PortalPlacement : MonoBehaviour
             // portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
     
             portal.transform.position = hit.point;
-            portal.transform.rotation = Quaternion.FromToRotation(-Vector3.forward, hit.normal);
+            portal.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
             
             // Don't rotate the portal, keep it rightside up (but can rotate it on other x and y axis)
             Vector3 portal_angles = portal.transform.eulerAngles;
@@ -111,7 +111,7 @@ public class PortalPlacement : MonoBehaviour
 
     private void ClipPortalCameraView(Camera portalCamera, GameObject inPortal, GameObject outPortal) {
         //credits to Daniel Ilett
-        Plane p = new Plane(-outPortal.transform.forward, outPortal.transform.position);
+        Plane p = new Plane(outPortal.transform.forward, outPortal.transform.position);
         Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
         Vector4 clipPlaneCameraSpace = Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * clipPlane;
         portalCamera.projectionMatrix = playerCamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
