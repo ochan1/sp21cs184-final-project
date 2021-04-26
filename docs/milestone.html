@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
@@ -14,89 +15,149 @@
       margin-right: auto;
     } */
 
-    p.result {
+    /* p.result {
       text-align: center;
       margin: 20px;
+    } */
+
+    #team {
+      display: block;
+      padding: auto;
+      margin: auto;
     }
 
     img.result {
-      width: 60%;
+      width: 75%;
       display: block;
       margin: auto;
     }
+    
+    a.navigation {
+      margin-right: 50px;
+    }
+    
   </style>
 </head>
 
 <body>
   <h1>Portals Project Milestone</h1>
-
+  
   <table>
     <tr style="vertical-align:top; width:100%">
       <td style="padding-left:100px;">
         <h2>Team members</h2>
-        <ul>
-          <li>Raymond Chau</li>
-          <li>Oscar Chan</li>
-          <li>Ashley Zhang</li>
-          <li>Daniel Molina</li>
+        <ul style="list-style-type:none">
+          <li id="team">Oscar Chan</li>
+          <li id="team">Raymond Chau</li>
+          <li id="team">Daniel Molina</li>
+          <li id="team">Ashley Zhang</li>
         </ul>
       </td>
       <td style="padding-left:100px;">
         <h2>Table of Contents</h2>
-        <ul>
-          <li><a href="#accomplishments">Accomplishments</a></li>
-          <li><a href="#progress">Progress</a></li>
-          <li><a href="#result">Result</a></li>
-          <li><a href="#updates">Work Plan Updates</a></li>
-          <li><a href="#video">Video</a></li>
-          <li><a href="#slides">Slides</a></li>
+        <ul style="list-style-type:none">
+          <li><a href="#accomplishments" class="navigation">Accomplishments</a></li>
+          <li><a href="#progress" class="navigation">Progress</a></li>
+          <li><a href="#result" class="navigation">Result</a></li>
+          <li><a href="#updates" class="navigation">Work Plan Updates</a></li>
+          <li><a href="#video" class="navigation">Video</a></li>
+          <li><a href="#slides" class="navigation">Slides</a></li>
         </ul>
       </td>
     </tr>
   </table>
-  
+
   <h2 id="accomplishments">Accomplishments</h2>
   <p>
-    <!-- Daniel -->
-
+    Our team has accomplished the MVP of the project. This includes being able to place two portals down, look through
+    the portals so the player can see what the other portal sees, and having emission shader's that give life to the
+    scene. The portal placement is calculated by shooting a ray from where the player clicks. We check for collisions
+    from the ray to a plane. If the ray collides with a plane object, then we place a portal down on the plane with a
+    slight offset, so that the portal does not get buried in the plane.
+  </p>
+  <p>
+    For being able to see through the portals, we employ a couple of camera tricks. We have two cameras set up, one for
+    each portal. Each of these cameras relays what they are viewing to its partner portal. We must
+    update both camera's position in relation to the player's position. This works by flipping the portal camera's and
+    positioning the camera to the inverse of the player's current position. We must then rotate the camera afterwards.
+    This allows us to maintain a nice view in each portal that does not look disjointed.
+  </p>
+  <p>For the shaders, we apply what we learned in project 4 to create a blinn-phong unlit shader. We have also created a
+    surface shader that wraps objects in light. We first calculate a Fresnel coefficient by taking the dot product of
+    the view direction and the world position of the object's vertex. We then
+    raise it to some power. We linearly interpolate the texture
+    and emission color using this coefficient and set our object's emission equal to that. This works well for
+    spherical/cylindrical objects with smooth, round edges, but not as well for shapes such as planes or cubes.
   </p>
 
   <h2 id="progress">Progress So Far</h2>
-  <p>
-    <!-- Daniel -->
-
+  <p>Our progress has been pretty good so far. We finished the mvp, like how we intended.
+    Currently, for our portal view, it only displays a real time camera feed, but does not really take into account
+    lighting. Our portals also clip through parts of the floor or other portals, so we must fix that by offsetting if it
+    detects such collisions. 
+    Another thing the portal currently doesn't do is teleporting the player, which is one of the next main goals. While
+    our shader emanates or allows for certain objects to radiate/emit light, it only works for spheres or cylinders.
   </p>
-
   <h2 id="result">Result</h2>
-  <p class="result">
-    <!-- Raymond -->
-    Our result is a movable character that is controlled with the typical movement keys WASD. W and S control forward and backward movement, while A and D are for left and right.
-  </p>
 
-  <img class="result" src="images/result-1.png" alt="character">
-
-  <p class="result">
-    The player can choose to shoot a first portal in the scene with either the left or right mouse button.
-  </p>
-
-  <img class="result" src="images/result-2.png" alt="first portal">
-
-  <p class="result">
-    Shooting both portals will result in the ability to view the opposite portal's perspective through either portal.
-  </p>
-
-  <img class="result" src="images/result-3.png" alt="opposite portal's perspective from portal">
+  <div align="center">
+    <table style="width:100%">
+      <tr>
+        <td align="middle">
+          <img class="result" src="images/result-1.png" />
+          <figcaption align="middle">Our result is a movable character that is controlled with the typical movement keys
+            WASD. W and S control forward
+            and backward movement, while A and D are for left and right.</figcaption>
+        <td align="middle">
+          <img class="result" src="images/result-2.png" />
+          <figcaption align="middle">The player can choose to shoot a first portal in the scene with either the left or
+            right mouse button.</figcaption>
+        <td align="middle">
+          <img class="result" src="images/result-3.png" />
+          <figcaption align="middle">Shooting both portals will result in the ability to view the opposite portal's
+            perspective through either portal.</figcaption>
+      </tr>
+    </table>
+  </div>
 
   <h2 id="updates">Work Plan Updates</h2>
+  <!-- Oscar - Done -->
   <p>
-    <!-- Oscar -->
-    
+    As we are able to get an example scene and basic portal representation to be created,
+    we are able to complete our <code>Minimal Viable Product (MVP)</code> as planned.
   </p>
+  <p>
+    We then move on to complete more complex features and stretch goals. They are
+    listed as follows:
+  </p>
+  <ul>
+    <li>
+      Allowing the player to teleport through portals. Step 1 is to purely
+      just teleport the player in front of the other portal. Step 2 is to
+      slice the material to the other portal via a copy of the player.
+    </li>
+    <li>
+      Ability to handle recursive portals, where a portal renders the
+      display of the other portal, which causes the render of the other
+      portal, causing a recursive effect.
+    </li>
+    <li>
+      Decorate the edge of the portal. The current plane is to have radient edges
+      similar to the capsule.
+    </li>
+    <li>
+      Fancy lighting to show through the portal. The current idea is to teleport the
+      light through the portal.
+    </li>
+  </ul>
 
   <h2 id="video">Video</h2>
+  <a href="https://www.youtube.com/watch?v=vLYWw90OYkA">Link to Milestone Video</a>
   <p>
-    <!-- Ashley -->
-
+    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/vLYWw90OYkA"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
   </p>
 
   <h2 id="slides">Slides</h2>
@@ -106,10 +167,15 @@
       Link these on your webpage too.
     -->
     <!-- Raymond -->
-    <a href="https://docs.google.com/presentation/d/12DQ9QLxwdG_S7SYcC_Pn8hA_jdNDXuE576hIh0NbnVo/edit?usp=sharing">Link to slides</a>
+    <a href="https://docs.google.com/presentation/d/1jQDEgsd5oik0E_c4wklU3iDIC1KGv4vrEass7CJIXTM/edit?usp=sharing">Link
+      to slides</a>
   </p>
-  
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRPd8mZtvA8-gd8XTbPJ-L8uLP-jsyZ53XUDDKzuPN6jeyiJXXP26OyKKWqJfSJLyjPMFfTS-s23LOh/embed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
+  <iframe
+    src="https://docs.google.com/presentation/d/e/2PACX-1vTZDKNeO9PXLk_yLQd8lmo4faq2YihkGkmjtEjp6vNh6nqlrq1hpL9V03XHTy9jz8hVf6-sJ7NOU1HM/embed?start=false&loop=false&delayms=3000"
+    frameborder="0" width="750" height="500" allowfullscreen="true" mozallowfullscreen="true"
+    webkitallowfullscreen="true"></iframe>
 
 </body>
+
 </html>
