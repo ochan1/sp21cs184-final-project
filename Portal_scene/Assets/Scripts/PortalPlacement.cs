@@ -63,6 +63,12 @@ public class PortalPlacement : MonoBehaviour
     
             portal.transform.position = hit.point;
             portal.transform.rotation = Quaternion.FromToRotation(-Vector3.forward, hit.normal);
+            
+            // Don't rotate the portal, keep it rightside up (but can rotate it on other x and y axis)
+            Vector3 portal_angles = portal.transform.eulerAngles;
+            portal_angles.z = 0.0f;
+            portal.transform.eulerAngles = portal_angles;
+
             portal.gameObject.SetActive(true);
             
             portal.GetComponent<Renderer>().material.SetColor("_Color", color);
