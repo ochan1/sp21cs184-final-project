@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "Unlit/portalEmissionShader"
 {
     Properties
@@ -10,6 +12,10 @@ Shader "Unlit/portalEmissionShader"
         [PowerSlider(4)] _Scale ("Scale", Range(0, 2)) = 1
         _FresnelColor ("Fresnel Color", Color) = (1,1,1,1)
         _Center ("Center", Vector) = (0, 0, 0, 0)
+        // set max distance from edge
+        [PowerSlider(4)] _MaxDist1 ("Max Dist", Range(0, 2)) = 1
+        [PowerSlider(4)] _MaxDist2 ("Max Dist", Range(2, 5)) = 2
+        [PowerSlider(4)] _MaxDist3 ("Max Dist", Range(5, 7)) = 5
     }
     SubShader
     {
@@ -40,6 +46,9 @@ Shader "Unlit/portalEmissionShader"
         float _Power;
         fixed4 _FresnelColor;
         float4 _Center;
+        float _MaxDist1;
+        float _MaxDist2;
+        float _MaxDist3;
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
         // #pragma instancing_options assumeuniformscaling
@@ -59,13 +68,22 @@ Shader "Unlit/portalEmissionShader"
             o.Smoothness = _Glossiness;
             o.Alpha = c.a;
 
-            float3 viewDir = normalize(IN.viewDir);
-            float3 currNormal = normalize(IN.worldNormal);
+            // float3 viewDir = normalize(IN.viewDir);
+            // float3 currNormal = normalize(IN.worldNormal);
+            
+            
             // put center in world space
-            float4 center_world = mul(unity_ObjectToWorld, _Center);
-            float dist = distance(center_world.xyz, IN.vertex.xyz);
-            float R = _Scale * pow(1.0 + dist, _Power);   // dot(currNormal, viewDir)
-            o.Emission = lerp(_FresnelColor, c, R);  // lerp(_FresnelColor, c, R)
+            // float4 center_world = mul(unity_ObjectToWorld, _Center);
+            // float4 vertex_world = mul(unity_ObjectToWorld, IN.vertex);
+            float dist = distance(_Center.xyz, IN.vertex.xyz);     // how far from the center we are
+            
+
+            // float R = _Scale * pow(1.0 + dist, _Power);   // dot(currNormal, viewDir)
+            //linearly interpolate from that point (IN.vertex) to the edge
+            fixed4 lerp1 = lerp(_FresnelColor, _Color, dist / _MaxDist1);
+            fixed4 lerp2 = lerp(lerp1, _FresnelColor, dist / _MaxDist2);
+            fixed4 lerp3 = lerp(lerp2, _FresnelColor, dist / _MaxDist3);
+            o.Emission = lerp3;  // lerp(_FresnelColor, c, R) lerp(_FresnelColor, _Color, dist / _MaxDist)
         }
         ENDCG
     }
