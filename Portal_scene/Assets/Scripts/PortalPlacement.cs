@@ -59,7 +59,9 @@ public class PortalPlacement : MonoBehaviour
             //
             
             Transform objectHit = hit.transform;
-            // portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
+            if (portal.GetComponent<PortalTeleportation>() != null) {
+                portal.GetComponent<PortalTeleportation>().wallCollider = hit.collider;
+            }
     
             portal.transform.position = hit.point;
             portal.transform.rotation = Quaternion.FromToRotation(Vector3.forward, hit.normal);
