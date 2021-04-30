@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class PortalTeleportation : MonoBehaviour
 {
-    private Dictionary<Collider, int> objectCountInPortal = new Dictionary<Collider, int>();
-    
     GameObject inPortal;
     GameObject outPortal;
+    Collider teleportingObject;
     public Collider wallCollider = null;
+    public float teleportOffset = 1.1f;
+
+    private bool objectInPortal = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        wallCollider = this.GetComponent<Collider>();
         if (this.name == "Portal 0") {
             inPortal = this.gameObject;
             outPortal = this.transform.parent.Find("Portal 1").gameObject;
@@ -26,38 +27,53 @@ public class PortalTeleportation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(var obj in objectCountInPortal) {
-            Vector3 objPos = transform.InverseTransformPoint(obj.Key.transform.position);
-            if (objPos.z > 0.0f && obj.Value == 0) {
-                teleport(obj.Key);
-            }
-        }
+        // if (objectInPortal) {
+        //     Vector3 objPos = transform.InverseTransformPoint(teleportingObject.transform.position);
+		// 	if (objPos.z < 0.0f)
+		// 	{
+		// 		teleport();
+        //         objectInPortal = false;
+		// 	}
+		// }
+    }
+
+    void FixedUpdate() {
+        if (objectInPortal) {
+            Vector3 objPos = transform.InverseTransformPoint(teleportingObject.transform.position);
+			if (objPos.z < 0.0f)
+			{
+				teleport();
+                objectInPortal = false;
+			}
+		}
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (!objectCountInPortal.ContainsKey(other)) {
-            objectCountInPortal.Add(other, 0);
-        } else {
-            objectCountInPortal[other] += 1;
+        if (other.tag == "Player" && inPortal.activeSelf && outPortal.activeSelf) {
+            teleportingObject = other;
+            objectInPortal = true;
+            Physics.IgnoreCollision(other, wallCollider, true);
+            Physics.IgnoreCollision(other, outPortal.GetComponent<PortalTeleportation>().wallCollider, true);
         }
-        Physics.IgnoreCollision(other, wallCollider, true);
-        // Physics.IgnoreCollision(other, outPortal.GetComponent<PortalTeleportation>().wallCollider, true);
     }
 
     private void OnTriggerExit(Collider other) {
-        objectCountInPortal[other] -= 1;
-        Physics.IgnoreCollision(other, wallCollider, false);
-        // Physics.IgnoreCollision(other, outPortal.GetComponent<PortalTeleportation>().wallCollider, false);
+        if (other.tag == "Player" && inPortal.activeSelf && outPortal.activeSelf) {
+            objectInPortal = false;
+            Physics.IgnoreCollision(other, wallCollider, false);
+            Physics.IgnoreCollision(other, outPortal.GetComponent<PortalTeleportation>().wallCollider, true);
+        }
     }
 
-    private void teleport(Collider other)
+    private void teleport()
     {
         Quaternion flip = Quaternion.Euler(0.0f, 180.0f, 0.0f);
 
-        Vector3 relativePos = inPortal.transform.InverseTransformPoint(other.transform.position);
-        other.transform.position = outPortal.transform.TransformPoint(relativePos);
+        Vector3 relativePos = inPortal.transform.InverseTransformPoint(teleportingObject.transform.position);
+        teleportingObject.transform.position = outPortal.transform.TransformPoint(relativePos) + outPortal.transform.forward * teleportOffset;
 
-        Quaternion relativeRot = flip * Quaternion.Inverse(inPortal.transform.rotation) * other.transform.rotation;
-        other.transform.rotation = outPortal.transform.rotation * relativeRot;
+        Quaternion relativeRot = flip * Quaternion.Inverse(inPortal.transform.rotation) * teleportingObject.transform.rotation;
+        teleportingObject.transform.rotation = outPortal.transform.rotation * relativeRot;
+
     }
 }
