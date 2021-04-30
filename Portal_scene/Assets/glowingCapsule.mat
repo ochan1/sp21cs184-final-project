@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: glowingCapsule
-  m_Shader: {fileID: 4800000, guid: 9d5566b1d07fa4501b568cd5fa649a3b, type: 3}
+  m_Shader: {fileID: 4800000, guid: 7bc0033ed99024c9e9b3adc095b5cc2f, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: d4de1d36c48b0544abebf259804acdc8, type: 3}
+        m_Texture: {fileID: 2800000, guid: e6d57f9ecac644ec98c704e6557d49cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -63,12 +63,16 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.507
     - _GlossyReflections: 1
+    - _MaxDist: 0.62
+    - _MaxDist1: 0.168
+    - _MaxDist2: 2.4
+    - _MaxDist3: 6.159
     - _Metallic: 0.035
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Power: 1.74
-    - _Scale: 0.274
+    - _Power: 0.75
+    - _Scale: 0.002
     - _Size: 0.6
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -76,7 +80,8 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.10196076, g: 0.7211436, b: 0.74509805, a: 1}
+    - _Center: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.6886792, g: 0.44423506, b: 0.26962438, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FresnelColor: {r: 0.47578815, g: 0, b: 0.7254902, a: 1}
+    - _FresnelColor: {r: 0.8511007, g: 0.8244927, b: 0.9056604, a: 1}
   m_BuildTextureStacks: []
