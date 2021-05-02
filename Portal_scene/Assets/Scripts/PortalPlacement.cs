@@ -6,6 +6,9 @@ public class PortalPlacement : MonoBehaviour
 {
     public GameObject portal0;
     public GameObject portal1;
+
+    public GameObject emitter0;
+    public GameObject emitter1;
     
     private GameObject inPortal;
     private GameObject outPortal;
@@ -28,11 +31,11 @@ public class PortalPlacement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            FirePortal(portal0, portal1, new Color(1.0f, 0.60f, 0.0f));
+            FirePortal(portal0, portal1, new Color(1.0f, 0.60f, 0.0f), emitter0);
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
-            FirePortal(portal1, portal0, new Color(0.0f, 0.40f, 1.0f));
+            FirePortal(portal1, portal0, new Color(0.0f, 0.40f, 1.0f), emitter1);
         }
 
         // SetPortalCamera();
@@ -42,7 +45,7 @@ public class PortalPlacement : MonoBehaviour
         ClipPortalCameraView(portal0Camera, portal1, portal0);
     }
 
-    private void FirePortal(GameObject portal, GameObject otherPortal, Color color)
+    private void FirePortal(GameObject portal, GameObject otherPortal, Color color, GameObject emitter)
     {
         RaycastHit hit;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
@@ -72,8 +75,18 @@ public class PortalPlacement : MonoBehaviour
             portal.transform.eulerAngles = portal_angles;
 
             portal.gameObject.SetActive(true);
+            emitter.transform.position = portal.transform.position;
+            // emitter.transform.rotation = portal.transform.rotation;
+            emitter.transform.rotation = Quaternion.FromToRotation(-Vector3.forward, hit.normal);
             
-            portal.GetComponent<Renderer>().material.SetColor("_Color", color);
+            Vector3 emitter_angles = emitter.transform.eulerAngles;
+            emitter_angles.y = emitter_angles.y + 180;
+            emitter.transform.eulerAngles = emitter_angles;
+
+            emitter.transform.localScale = new Vector3(1f, 1f, 1f);
+            emitter.gameObject.SetActive(true);
+            
+            // portal.GetComponent<Renderer>().material.SetColor("_Color", color);
         }
     }
 
