@@ -12,13 +12,13 @@ Shader "Unlit/PortalShader"
 	}
 	SubShader
 	{
-		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
+		Tags { "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		Lighting Off
 		Cull Back
 		ZWrite On
 		ZTest Less
 		
-		Fog{ Mode Off }
+		Fog { Mode Off }
 
 		Pass
 		{
@@ -36,7 +36,6 @@ Shader "Unlit/PortalShader"
 
 			struct v2f
 			{
-				//float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
 				float4 screenPos : TEXCOORD1;
 			};
