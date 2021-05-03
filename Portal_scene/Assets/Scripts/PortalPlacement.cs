@@ -62,6 +62,11 @@ public class PortalPlacement : MonoBehaviour
                     || hit.transform.gameObject == otherPortal.transform.GetChild(0).gameObject) {
                     return;
                 }
+                //Avoid with original portal as well (this is for wall collider purposes)
+                if (hit.transform.gameObject == portal
+                    || hit.transform.gameObject == portal.transform.GetChild(0).gameObject) {
+                    return;
+                }
             }
             //
             
