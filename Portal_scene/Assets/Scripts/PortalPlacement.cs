@@ -40,10 +40,12 @@ public class PortalPlacement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             FirePortal(portal0, portal0Camera, portal1, new Color(1.0f, 0.60f, 0.0f), emitter0);
+            previousPortalPos0 = portal0.transform.position;
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             FirePortal(portal1, portal1Camera, portal0, new Color(0.0f, 0.40f, 1.0f), emitter1);
+            previousPortalPos1 = portal1.transform.position;
         }
         
         UpdateCamera(portal1Camera, portal0, portal1);
@@ -53,10 +55,12 @@ public class PortalPlacement : MonoBehaviour
         UpdateCamera(portal0Camera, portal1, portal0);
         UpdatePortalCamera(portal0Camera, portal1, portal0);
         ClipPortalCameraView(portal0Camera, portal1, portal0);
+        
         CheckInView(portal0, portal1);
     }
 
-    private void FirePortal(GameObject portal, Camera portalCamera, GameObject otherPortal, Color color, GameObject emitter)
+    private void FirePortal(GameObject portal, Camera portalCamera, GameObject otherPortal, Color color,
+                            GameObject emitter)
     {
         RaycastHit hit;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
@@ -103,10 +107,6 @@ public class PortalPlacement : MonoBehaviour
             emitter.gameObject.SetActive(true);
             portalCamera.gameObject.SetActive(true);
             
-            tempDeactivated = false;
-            
-            previousPortalPos0 = new Vector3(0, 0, 0);;
-            previousPortalPos1 = new Vector3(0, 0, 0);;
             // portal.GetComponent<Renderer>().material.SetColor("_Color", color);
         }
     }
@@ -143,17 +143,12 @@ public class PortalPlacement : MonoBehaviour
         UpdatePortalCamera(portalCamera, inPortal, outPortal);
 
         // credits to Daniel Ilett
-
-        Transform inTransform = inPortal.transform;
-
-        Transform cameraTransform = portalCamera.transform;
-
         for(int i = 0; i <= iterationID; ++i)
         {
             // Position the camera behind the other portal.
             Vector3 relativePos = inPortal.transform.InverseTransformPoint(portalCamera.transform.position);
             relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-            cameraTransform.position = outPortal.transform.TransformPoint(relativePos);
+            portalCamera.transform.position = outPortal.transform.TransformPoint(relativePos);
 
             // Rotate the camera to look through the other portal.
             Quaternion relativeRot = Quaternion.Inverse(inPortal.transform.rotation) * portalCamera.transform.rotation;
@@ -165,17 +160,26 @@ public class PortalPlacement : MonoBehaviour
         ClipPortalCameraView(portalCamera, inPortal, outPortal);
 
         // Render the camera to its render target.
+        // Fixed - Causing slowdown from rendering. Solution: Change texture resolution to 480p
+        Debug.Log(portalCamera.projectionMatrix);
         portalCamera.Render();
+        // if (IsInView(portalCamera, outPortal.transform.position)) {
+        //     portalCamera.Render();
+        // } else {
+        //     Debug.Log("LOL Bug get recked");
+        // }
     }
+
     private void CheckInView(GameObject inPortal, GameObject outPortal) {
         if(tempDeactivated) {
-            bool[] prevOnScreen = IsInView(previousPortalPos0, previousPortalPos1);
-            if(prevOnScreen[0] || prevOnScreen[1]) {
+            bool prevOnScreen0 = IsInView(previousPortalPos0);
+            bool prevOnScreen1 = IsInView(previousPortalPos1);
+            if(prevOnScreen0 || prevOnScreen1) {
                 inPortal.SetActive(true);
                 outPortal.SetActive(true);
                 tempDeactivated = false;
-                previousPortalPos0 = new Vector3(0, 0, 0);;
-                previousPortalPos1 = new Vector3(0, 0, 0);;
+                previousPortalPos0 = new Vector3(0, 0, 0);
+                previousPortalPos1 = new Vector3(0, 0, 0);
                 return;
             }
         }
@@ -183,10 +187,13 @@ public class PortalPlacement : MonoBehaviour
         {
             return;
         }
-        bool[] onScreen = IsInView(inPortal.transform.position, outPortal.transform.position);
-        // Debug.Log("PortalPoint1: " + portalPoint1);
-        if(!onScreen[0] && !onScreen[1]) {
-            if(Vector3.Distance(inPortal.transform.position, playerCamera.transform.position) > 3 || Vector3.Distance(outPortal.transform.position, playerCamera.transform.position) > 3) {
+        bool onScreen0 = IsInView(inPortal.transform.position);
+        bool onScreen1 = IsInView(outPortal.transform.position);
+
+        if(!onScreen0 && !onScreen1) {
+            if(Vector3.Distance(inPortal.transform.position, playerCamera.transform.position) > 3 &&
+               Vector3.Distance(outPortal.transform.position, playerCamera.transform.position) > 3) {
+                // Despawn if BOTH are out of my range (and out of my sight via the original "if")
                 previousPortalPos0 = inPortal.transform.position;
                 previousPortalPos1 = outPortal.transform.position;
                 inPortal.SetActive(false);
@@ -198,15 +205,16 @@ public class PortalPlacement : MonoBehaviour
 
     }
 
-    private bool[] IsInView(Vector3 portalPos0, Vector3 portalPos1) {
-        Vector3 portalPoint0 = playerCamera.WorldToViewportPoint(portalPos0);
-        Vector3 portalPoint1 = playerCamera.WorldToViewportPoint(portalPos1);
-        bool[] onScreens = new bool[2];
-        bool onScreen0 = portalPoint0.x > 0 && portalPoint0.x < 1 && portalPoint0.y > 0 && portalPoint0.y < 1 && portalPoint0.z > 0;
-        bool onScreen1 = portalPoint1.x > 0 && portalPoint1.x < 1 && portalPoint1.y > 0 && portalPoint1.y < 1 && portalPoint1.z > 0;
-        onScreens[0] = onScreen0;
-        onScreens[1] = onScreen1;
-        return onScreens;
+    private bool IsInView(Camera referenceCam, Vector3 portalPos) {
+        Vector3 portalPoint = referenceCam.WorldToViewportPoint(portalPos);
+        bool onScreen = portalPoint.x > -0.5 && portalPoint.x < 1.5 &&
+                         portalPoint.y > -0.5 && portalPoint.y < 1.5 &&
+                         portalPoint.z > 0;
+        return onScreen;
+    }
+
+    private bool IsInView(Vector3 portalPos) {
+        return IsInView(playerCamera, portalPos);
     }
 
 }
