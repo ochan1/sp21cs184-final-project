@@ -19,10 +19,16 @@ public class PortalPlacement : MonoBehaviour
 
     private int iterations = 7;
 
+    private bool tempDeactivated = false;
+    private Vector3 previousPortalPos0;
+    private Vector3 previousPortalPos1;
+
     private void Awake()
     {
         inPortal = portal0;
         outPortal = portal1;
+        previousPortalPos0 = new Vector3(0, 0, 0);
+        previousPortalPos1 = new Vector3(0, 0, 0);
     }
 
     void OnGUI() {
@@ -47,6 +53,7 @@ public class PortalPlacement : MonoBehaviour
         UpdateCamera(portal0Camera, portal1, portal0);
         UpdatePortalCamera(portal0Camera, portal1, portal0);
         ClipPortalCameraView(portal0Camera, portal1, portal0);
+        CheckInView(portal0, portal1);
     }
 
     private void FirePortal(GameObject portal, Camera portalCamera, GameObject otherPortal, Color color, GameObject emitter)
@@ -96,6 +103,10 @@ public class PortalPlacement : MonoBehaviour
             emitter.gameObject.SetActive(true);
             portalCamera.gameObject.SetActive(true);
             
+            tempDeactivated = false;
+            
+            previousPortalPos0 = new Vector3(0, 0, 0);;
+            previousPortalPos1 = new Vector3(0, 0, 0);;
             // portal.GetComponent<Renderer>().material.SetColor("_Color", color);
         }
     }
@@ -120,7 +131,7 @@ public class PortalPlacement : MonoBehaviour
         {
             return;
         }
-
+       
         for (int i = iterations - 1; i >= 0; --i)
         {
             RenderCamera(portalCamera, inPortal, outPortal, i);
@@ -163,4 +174,47 @@ public class PortalPlacement : MonoBehaviour
         // Render the camera to its render target.
         portalCamera.Render();
     }
+    private void CheckInView(GameObject inPortal, GameObject outPortal) {
+        if(tempDeactivated) {
+            bool[] prevOnScreen = IsInView(previousPortalPos0, previousPortalPos1);
+            if(prevOnScreen[0] || prevOnScreen[1]) {
+                inPortal.SetActive(true);
+                outPortal.SetActive(true);
+                tempDeactivated = false;
+                previousPortalPos0 = new Vector3(0, 0, 0);;
+                previousPortalPos1 = new Vector3(0, 0, 0);;
+                return;
+            }
+        }
+        if (!inPortal.activeSelf || !outPortal.activeSelf)
+        {
+            return;
+        }
+        bool[] onScreen = IsInView(inPortal.transform.position, outPortal.transform.position);
+        // Debug.Log("PortalPoint1: " + portalPoint1);
+        if(!onScreen[0] && !onScreen[1]) {
+            if(Vector3.Distance(inPortal.transform.position, playerCamera.transform.position) > 3 || Vector3.Distance(outPortal.transform.position, playerCamera.transform.position) > 3) {
+                previousPortalPos0 = inPortal.transform.position;
+                previousPortalPos1 = outPortal.transform.position;
+                inPortal.SetActive(false);
+                outPortal.SetActive(false);
+                tempDeactivated = true;
+                return;
+            }
+        }
+
+    }
+
+    private bool[] IsInView(Vector3 portalPos0, Vector3 portalPos1) {
+        Vector3 portalPoint0 = playerCamera.WorldToViewportPoint(portalPos0);
+        Vector3 portalPoint1 = playerCamera.WorldToViewportPoint(portalPos1);
+        bool[] onScreens = new bool[2];
+        bool onScreen0 = portalPoint0.x > 0 && portalPoint0.x < 1 && portalPoint0.y > 0 && portalPoint0.y < 1 && portalPoint0.z > 0;
+        bool onScreen1 = portalPoint1.x > 0 && portalPoint1.x < 1 && portalPoint1.y > 0 && portalPoint1.y < 1 && portalPoint1.z > 0;
+        onScreens[0] = onScreen0;
+        onScreens[1] = onScreen1;
+        return onScreens;
+    }
+
 }
+
