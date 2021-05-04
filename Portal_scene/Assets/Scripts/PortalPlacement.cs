@@ -17,7 +17,7 @@ public class PortalPlacement : MonoBehaviour
     public Camera portal1Camera;
     public Camera portal0Camera;
 
-    private int iterations = 7;
+    private int iterations = 3;
 
     private void Awake()
     {
@@ -151,14 +151,7 @@ public class PortalPlacement : MonoBehaviour
         }
 
         // Set the camera's oblique view frustum.
-        Transform outTransform = outPortal.transform;
-        Plane p = new Plane(outTransform.forward, outTransform.position);
-        Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
-        Vector4 clipPlaneCameraSpace =
-            Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * clipPlane;
-
-        var newMatrix = playerCamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
-        portalCamera.projectionMatrix = newMatrix;
+        ClipPortalCameraView(portalCamera, inPortal, outPortal);
 
         // Render the camera to its render target.
         portalCamera.Render();
