@@ -1,0 +1,330 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* h1, h2 {
+      text-align: center;
+    }
+
+    table {
+      margin-left: auto;
+      margin-right: auto;
+    } */
+
+    /* p.result {
+      text-align: center;
+      margin: 20px;
+    } */
+
+    #team {
+      display: block;
+      padding: auto;
+      margin: auto;
+    }
+
+    img.result {
+      width: 75%;
+      display: block;
+      margin: auto;
+    }
+
+    a.navigation {
+      margin-right: 50px;
+    }
+  </style>
+
+  <script id="MathJax-script" async=async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <h1>Portals Project Final Report</h1>
+
+  <table>
+    <tr style="vertical-align:top; width:100%">
+      <td style="padding-left:100px;">
+        <h2>Team members</h2>
+        <ul style="list-style-type:none">
+          <li id="team">Oscar Chan</li>
+          <li id="team">Raymond Chau</li>
+          <li id="team">Daniel Molina</li>
+          <li id="team">Ashley Zhang</li>
+        </ul>
+      </td>
+      <td style="padding-left:100px;">
+        <h2>Table of Contents</h2>
+        <ul style="list-style-type:none">
+          <li><a href="#abstract" class="navigation">Abstract</a></li>
+          <li><a href="#techapproach" class="navigation">Technical Approach</a></li>
+          <li><a href="#results" class="navigation">Results</a></li>
+          <li><a href="#references" class="navigation">References</a></li>
+          <li><a href="#contributions" class="navigation">Team Member Contributions</a></li>
+          <li><a href="#slides" class="navigation">Slides</a></li>
+          <li><a href="#video" class="navigation">Video</a></li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <h2 id="abstract">Abstract</h2>
+  <p>
+    In our project, we decided to implement portals. A portal can have many different uses or definitions, but
+    for this project,
+    we took inspiration from the popular video game series developed by Valve, Portal and Portal 2. Here, portals are
+    essentially an open doorway that transports you to a different location or environment.
+    They also allow you to peer into the environment as seen by the other portal, without needing to actually enter it.
+    Our overall goals for this project include experimenting with ray tracing and ray cast rendering for the 3D
+    objects in the scene. We wanted to see
+    how the portals would handle rendering these objects and how they would look. We also wanted to implement
+    teleportation to experiment with manipulating the player's position.
+    Furthermore, we wanted to make the portals more vibrant than just a simple projection of what is seen by the other
+    portal. We also wanted to inject more life into the scene. Because of this, we implemented a couple of custom
+    shaders
+    and applied them to the portal and to 3D objects.
+  </p>
+
+  <h2 id="techapproach">Technical Approach</h2>
+  <!-- TODO: Bullet 1 - Oscar-->
+  <!-- <h3>Portal Placement</h3>
+  <p>
+    This includes being able to place two portals down, look through
+    the portals so the player can see what the other portal sees, and having emission shader's that give life to the
+    scene. The portal placement is calculated by shooting a ray from where the player clicks. We check for collisions
+    from the ray to a plane. If the ray collides with a plane object, then we place a portal down on the plane with a
+    slight offset, so that the portal does not get buried in the plane.
+  </p> -->
+
+  <h3>Portal Placement</h3>
+  <p>
+    The portal placement is calculated by shooting a ray from where the player clicks. We check for collisions
+    from the ray to an object. If the ray collides with an object, then we place a portal down on the object with a
+    slight offset, so that the portal does not get buried in the object.
+  </p>
+  <p>
+    If the portal placement is targeted on a portal, the portal will not be placed. However, our current implementation
+    does allow portals to overlap if targeted right next to the portal, which may cause the portals looks to mix
+    together.
+  </p>
+  <p>
+    The left mouse button spawns the orange portal, while the right mouse button spawns the blue portal.
+    The portals are deactivated and hidden at the start, then activated at the first click of either.
+    If a portal has already spawned in the scene, it will despawn from the original location and respawn to the new
+    location.
+  </p>
+
+  <h3>Portal Viewing</h3>
+  <p>
+    For being able to see through the portals, we employ a couple of camera tricks. We have two cameras set up, one for
+    each portal. Each of these cameras relays what they are viewing to its partner portal. We must
+    update both camera's position in relation to the player's position. This works by flipping the portal camera's and
+    positioning the camera to the inverse of the player's current position. We must then rotate the camera afterwards.
+    This allows us to maintain a nice view in each portal that does not look disjointed.
+  </p>
+
+
+  <h3>Portals Teleportation</h3>
+  <p></p>
+
+  <h3>Recursive Portals</h3>
+  <p>
+    We create recursive portals by rendering
+  </p>
+
+  <h3>Object Shaders on Portals and Objects</h3>
+  <p>The equation we used for the Blinn-Phong shader:
+    $$L = (k_a * I_a) + (k_d * (I /r^2) * max(0, n * l)) + (k_s * (I/r^2) * max(0, n * h) ^ p)$$
+  </p>
+  <p>
+    For the shaders, we apply what we learned in project 4 to create a Blinn-Phong Unlit Shader. We have also created a
+    surface shader that wraps objects in light. We first calculate a Fresnel coefficient by taking the dot product of
+    the view direction and the normal of the object's vertex. ka, kd, and ks are the ambiance, diffuse, and spectural
+    coefficients respectively.
+    I/r^2 is the irradiance from the light source to the vertex we are sampling. n is the normal of the point and l is
+    the magnitude of the light source to the vertex.
+  </p>
+  <p>
+    The formula used to determine the Fresnel term is:
+    $$R = max(0, min(1, bias + scale * (1.0 + I \cdot N) * power))$$
+  </p>
+  <p>
+    We then raise it to a power that is tuned manually. We linearly interpolate the texture
+    and emission color using this coefficient and set our object's emission equal to that. This works well for
+    spherical/cylindrical objects with smooth, round edges, but not as well for shapes such as planes or cubes.
+    You can see the result of this work applied to the capsule of the scene.
+  </p>
+  <p>
+    We implemented a second emissive shader that gives each of the portals a glowing orange or blue rim that becomes
+    lighter towards the center of the portal. We find the distance between the center of the object and each vertex, and
+    use this distance to interpolate between different emitted colors. This shader works well for flat-faced objects
+    like planes and cubes.
+  </p>
+
+
+  <h3>Problems Encountered</h3>
+  <!-- TODO: Raymond Bullet 2 - Problems Encountered: 
+      1. Ashley and Daniel's Shader problem - incorrect shader (unlit shader vs. surface shader)
+      2. Portal Teleportation wouldn't teleport issue - resolved through FixedUpdate
+      3. Portal Lag problem
+      4. Portal flipping issue
+      5. Portal recursive issue - camera perspective not correct for sub portals, had to reassign camera reference
+  -->
+  <p>
+    One problem we encountered when implementing the glowing fresnel shader was that we wanted to apply a similar
+    appearance to the portals, but the effect carried over poorly from the capsule to the flat portal plane. The fresnel
+    shader was effective on round capsules because the glowing effect becomes more pronounced as the surface gradually
+    curves away from the viewer. However, because portals are flat and generally face the player directly, the fresnel
+    shader had little effect on the appearance of the portals. To resolve this, we implemented a second shader for
+    portals that uses UV coordinates to detect proximity to an edge and adjust emitted color accordingly.
+  </p>
+  <p>
+    Another problem overall was the lack of resources on how to write unity shaders. Many of the online examples of
+    shaders we wanted to implement or tried to gain inspiration from were done using
+    the built in shader lab in unity. They didn't provide any equations that they used to base their shader off of.
+    Since we wanted to code up the shader to practice what we learned in project 4, it made things difficult. Even in
+    tutorials that had well defined equations,
+    such as the Blinn-Phong shader, we struggled due to lack of documentation. We weren't sure what parameters were
+    needed and what types they were, which made the simple Blinn Phong shader a lot harder to implement. We did get help
+    from Mark Zhang for shaders, bless his soul and sorry Mark for all the questions, but all the other issues we ran
+    into
+    caused us to only be able to implement three shaders in total. It's a bit disappointing we couldn't implement more,
+    but regardless we are still happy and proud with what we accomplished.
+  </p>
+
+  <h3>Lessons Learned</h3>
+  <!-- TODO: Raymond Bullet 3 - Description of lessons learned -->
+
+  <h2 id="results">Results</h2>
+  <!-- TODO: Ashley -->
+  <p>
+    Our final interactive portals demo is linked below. We have implemented an interactive, real-time 3D portal
+    simulation in Unity, where the first-person player can move around the scene using WASD keys and place portals on
+    surfaces by
+    left or right clicking. The player can teleport between portals by walking through them. Recursive portal images can
+    be seen when they are placed facing each other.
+  </p>
+  <p>
+    We also implemented a variety of shaders to enhance the appearance of the scene. For round objects like capsules and
+    spheres, we created a glowing fresnel shader that takes in the surface normal and the view direction, and increases
+    brightness closer to the outer edges of the object. The result is a glowing appearance, regardless of the angle the
+    object is viewed from.
+  </p>
+  <p>For the orange and blue edges of the portals, we implemented a shader that gradually shifts the emitted color as it
+    approaches the edge of the portal face.</p>
+  <a href="https://ashz.itch.io/cs184-portals">Interactive demo</a>
+  <p>
+    WASD to move, left/right click to place portals. If the cursor is off-center or behaving abnormally, press Esc and
+    then click within the Unity player to realign the cursor with the mouse. Chrome is recommended.
+  </p>
+  <p>
+    <iframe src="https://itch.io/embed/1034404" height="167" width="552" frameborder="0"><a
+        href="https://ashz.itch.io/cs184-portals">Spring 2021 CS184 Final Project: Portals by ashz</a></iframe>
+  </p>
+
+  <a id="video" href="https://www.youtube.com/watch?v=caV2IXAl5Pk">Final video</a>
+  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/caV2IXAl5Pk"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe></p>
+
+  <a href="https://www.youtube.com/watch?v=h_QNX0RxF_g">Portal particles</a>
+  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/h_QNX0RxF_g"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe></p>
+
+  <a href="https://www.youtube.com/watch?v=p_YF_CRVbiM">Teleportation</a>
+  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/p_YF_CRVbiM"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe></p>
+
+  <a href="https://www.youtube.com/watch?v=WdHLZFs5WKo">Glowing Fresnel shader</a>
+  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/WdHLZFs5WKo"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe></p>
+
+  <a href="https://www.youtube.com/watch?v=T6ZgtTQ-hWQ">Additional demo</a>
+  <p>
+    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/T6ZgtTQ-hWQ"
+      title="YouTube video player" frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
+  </p>
+
+  <h2 id="references">References</h2>
+  <!-- TODO: Everyone -->
+  <ul>
+    <li><a href="https://danielilett.com/2019-12-01-tut4-intro-portals/">Daniel Ilett</a></li>
+    <li><a href="https://www.youtube.com/watch?v=cWpFZbjtSQg">Sebastian Lague</a></li>
+    <li><a href="https://www.youtube.com/watch?v=cuQao3hEKfs">Brackeys</a></li>
+    <li><a href="https://docs.unity3d.com/Manual/SL-SurfaceShaders.html">Unity documentation - surface shaders</a></li>
+    <li>
+      <a href="https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html">
+        Unity documentation - shader variables
+      </a>
+    </li>
+    <li><a href="http://kylehalladay.com/blog/tutorial/2014/02/18/Fresnel-Shaders-From-The-Ground-Up.html">Kyle
+        Halladay</a></li>
+    <li><a href="https://www.red-gate.com/simple-talk/dotnet/c-programming/creating-a-shader-in-unity/">Lance
+        Talbert</a></li>
+    <li><a href="https://janhalozan.com/2017/08/12/phong-shader/">Jan Halozan</a></li>
+  </ul>
+
+  <h2 id="contributions">Team Member Contributions</h2>
+  <ul>
+    <li><strong>Oscar Chan</strong></li>
+    <li>
+      <p>
+        <!-- TODO: Oscar -->
+        Oscar worked on recursive portals and
+
+        Additional contributions were made to each of the deliverables such as the proposal, milestone status report,
+        final presentation, and final report webpage.
+      </p>
+    </li>
+    <li><strong>Raymond Chau</strong></li>
+    <li>
+      <p>
+        Raymond worked on implementing portal placement, portal teleportation, and updating the portal views. Additional
+        contributions were made to each of the deliverables such as the proposal, milestone status report, final
+        presentation, and final report webpage.
+      </p>
+    </li>
+    <li><strong>Daniel Molina</strong></li>
+    <li>
+      <p>
+        Daniel worked on movement with Ashley, implementing shaders, and despawning portals out of view/respawning them
+        when in view again as an optimization.
+        Additional contributions were made to each of the deliverables such as the proposal, milestone status report,
+        final presentation, and final report webpage.
+      </p>
+    </li>
+    <li><strong>Ashley Zhang</strong></li>
+    <li>
+      <p>
+        Ashley worked on implementing player and camera movement, implementing shaders with Daniel, constructing the
+        demo Unity scene, and recording and editing all videos. Additional contributions were made to each of the
+        deliverables such as the proposal, milestone status report, final presentation, and final report webpage.
+      </p>
+    </li>
+  </ul>
+
+  <h2 id="slides">Slides</h2>
+  <p>
+    <a href="https://docs.google.com/presentation/d/1D14k4lfZSJrxflhlj-thCS00o7t0DDBhzP0DTwkWTHg/edit?usp=sharing">Link
+      to slides</a>
+  </p>
+
+  <iframe
+    src="https://docs.google.com/presentation/d/e/2PACX-1vTUWi_0nTJRmJIGg3WggWoY0t463AvavfHEf7QnOkBIsnmB6bGxjkcuvYdt1xEBFkxOao4TCp4l6onm/embed?start=false&loop=false&delayms=3000"
+    frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true"
+    webkitallowfullscreen="true"></iframe>
+
+</body>
+
+</html>
