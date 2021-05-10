@@ -17,12 +17,18 @@ public class PortalPlacement : MonoBehaviour
     public Camera portal1Camera;
     public Camera portal0Camera;
 
-    private int iterations = 7;
+    private int iterations = 3;
+
+    private bool tempDeactivated = false;
+    private Vector3 previousPortalPos0;
+    private Vector3 previousPortalPos1;
 
     private void Awake()
     {
         inPortal = portal0;
         outPortal = portal1;
+        previousPortalPos0 = new Vector3(0, 0, 0);
+        previousPortalPos1 = new Vector3(0, 0, 0);
     }
 
     void OnGUI() {
@@ -34,10 +40,12 @@ public class PortalPlacement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             FirePortal(portal0, portal0Camera, portal1, new Color(1.0f, 0.60f, 0.0f), emitter0);
+            previousPortalPos0 = portal0.transform.position;
         }
         else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             FirePortal(portal1, portal1Camera, portal0, new Color(0.0f, 0.40f, 1.0f), emitter1);
+            previousPortalPos1 = portal1.transform.position;
         }
         
         UpdateCamera(portal1Camera, portal0, portal1);
@@ -47,9 +55,12 @@ public class PortalPlacement : MonoBehaviour
         UpdateCamera(portal0Camera, portal1, portal0);
         UpdatePortalCamera(portal0Camera, portal1, portal0);
         ClipPortalCameraView(portal0Camera, portal1, portal0);
+        
+        CheckInView(portal0, portal1);
     }
 
-    private void FirePortal(GameObject portal, Camera portalCamera, GameObject otherPortal, Color color, GameObject emitter)
+    private void FirePortal(GameObject portal, Camera portalCamera, GameObject otherPortal, Color color,
+                            GameObject emitter)
     {
         RaycastHit hit;
         Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
@@ -120,7 +131,7 @@ public class PortalPlacement : MonoBehaviour
         {
             return;
         }
-
+       
         for (int i = iterations - 1; i >= 0; --i)
         {
             RenderCamera(portalCamera, inPortal, outPortal, i);
@@ -132,17 +143,12 @@ public class PortalPlacement : MonoBehaviour
         UpdatePortalCamera(portalCamera, inPortal, outPortal);
 
         // credits to Daniel Ilett
-
-        Transform inTransform = inPortal.transform;
-
-        Transform cameraTransform = portalCamera.transform;
-
         for(int i = 0; i <= iterationID; ++i)
         {
             // Position the camera behind the other portal.
             Vector3 relativePos = inPortal.transform.InverseTransformPoint(portalCamera.transform.position);
             relativePos = Quaternion.Euler(0.0f, 180.0f, 0.0f) * relativePos;
-            cameraTransform.position = outPortal.transform.TransformPoint(relativePos);
+            portalCamera.transform.position = outPortal.transform.TransformPoint(relativePos);
 
             // Rotate the camera to look through the other portal.
             Quaternion relativeRot = Quaternion.Inverse(inPortal.transform.rotation) * portalCamera.transform.rotation;
@@ -151,16 +157,65 @@ public class PortalPlacement : MonoBehaviour
         }
 
         // Set the camera's oblique view frustum.
-        Transform outTransform = outPortal.transform;
-        Plane p = new Plane(outTransform.forward, outTransform.position);
-        Vector4 clipPlane = new Vector4(p.normal.x, p.normal.y, p.normal.z, p.distance);
-        Vector4 clipPlaneCameraSpace =
-            Matrix4x4.Transpose(Matrix4x4.Inverse(portalCamera.worldToCameraMatrix)) * clipPlane;
-
-        var newMatrix = playerCamera.CalculateObliqueMatrix(clipPlaneCameraSpace);
-        portalCamera.projectionMatrix = newMatrix;
+        ClipPortalCameraView(portalCamera, inPortal, outPortal);
 
         // Render the camera to its render target.
+        // Fixed - Causing slowdown from rendering. Solution: Change texture resolution to 480p
+        Debug.Log(portalCamera.projectionMatrix);
         portalCamera.Render();
+        // if (IsInView(portalCamera, outPortal.transform.position)) {
+        //     portalCamera.Render();
+        // } else {
+        //     Debug.Log("LOL Bug get recked");
+        // }
     }
+
+    private void CheckInView(GameObject inPortal, GameObject outPortal) {
+        if(tempDeactivated) {
+            bool prevOnScreen0 = IsInView(previousPortalPos0);
+            bool prevOnScreen1 = IsInView(previousPortalPos1);
+            if(prevOnScreen0 || prevOnScreen1) {
+                inPortal.SetActive(true);
+                outPortal.SetActive(true);
+                tempDeactivated = false;
+                previousPortalPos0 = new Vector3(0, 0, 0);
+                previousPortalPos1 = new Vector3(0, 0, 0);
+                return;
+            }
+        }
+        if (!inPortal.activeSelf || !outPortal.activeSelf)
+        {
+            return;
+        }
+        bool onScreen0 = IsInView(inPortal.transform.position);
+        bool onScreen1 = IsInView(outPortal.transform.position);
+
+        if(!onScreen0 && !onScreen1) {
+            if(Vector3.Distance(inPortal.transform.position, playerCamera.transform.position) > 3 &&
+               Vector3.Distance(outPortal.transform.position, playerCamera.transform.position) > 3) {
+                // Despawn if BOTH are out of my range (and out of my sight via the original "if")
+                previousPortalPos0 = inPortal.transform.position;
+                previousPortalPos1 = outPortal.transform.position;
+                inPortal.SetActive(false);
+                outPortal.SetActive(false);
+                tempDeactivated = true;
+                return;
+            }
+        }
+
+    }
+
+    private bool IsInView(Camera referenceCam, Vector3 portalPos) {
+        Vector3 portalPoint = referenceCam.WorldToViewportPoint(portalPos);
+        bool onScreen = portalPoint.x > -0.5 && portalPoint.x < 1.5 &&
+                         portalPoint.y > -0.5 && portalPoint.y < 1.5 &&
+                         portalPoint.z > 0;
+        return onScreen;
+    }
+
+    private bool IsInView(Vector3 portalPos) {
+        return IsInView(playerCamera, portalPos);
+    }
+
 }
+

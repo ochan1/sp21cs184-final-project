@@ -61,7 +61,7 @@ public class PortalTeleportation : MonoBehaviour
         if (other.tag == "Player" && inPortal.activeSelf && outPortal.activeSelf) {
             objectInPortal = false;
             Physics.IgnoreCollision(other, wallCollider, false);
-            Physics.IgnoreCollision(other, outPortal.GetComponent<PortalTeleportation>().wallCollider, true);
+            Physics.IgnoreCollision(other, outPortal.GetComponent<PortalTeleportation>().wallCollider, false);
         }
     }
 
