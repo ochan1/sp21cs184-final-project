@@ -27,7 +27,7 @@
     }
 
     img.result {
-      width: 75%;
+      width: 50%;
       display: block;
       margin: auto;
     }
@@ -72,23 +72,22 @@
 
   <h2 id="abstract">Abstract</h2>
   <p>
-    In our project, we decided to implement portals. A portal can have many different uses or definitions, but
+    In our project, we decided to implement portals. A portal can have many definitions, but
     for this project,
-    we took inspiration from the popular video game series developed by Valve, Portal and Portal 2. Here, portals are
+    we took inspiration from the popular video game series developed by Valve: Portal and Portal 2. Here, portals are
     essentially an open doorway that transports you to a different location or environment.
-    They also allow you to peer into the environment as seen by the other portal, without needing to actually enter it.
-    Our overall goals for this project include experimenting with ray tracing and ray cast rendering for the 3D
+    They allow you to peer into the environment as seen by the other portal, without needing to actually enter it.
+    Our overall goals for this project include experimenting with ray tracing and ray casting for the 3D
     objects in the scene. We wanted to see
-    how the portals would handle rendering these objects and how they would look. We also wanted to implement
-    teleportation to experiment with manipulating the player's position.
-    Furthermore, we wanted to make the portals more vibrant than just a simple projection of what is seen by the other
-    portal. We also wanted to inject more life into the scene. Because of this, we implemented a couple of custom
+    how the portals would handle rendering these objects. We also wanted to implement
+    portal teleportation, to experiment with manipulating the player's position.
+    Furthermore, we wanted to make the portals more vibrant than just a simple projection and wanted to inject more life into the scene. Because of this, we implemented a couple of custom
     shaders
     and applied them to the portal and to 3D objects.
   </p>
 
   <h2 id="techapproach">Technical Approach</h2>
-  <!-- TODO: Bullet 1 - Oscar-->
+  <!-- Done: Bullet 1 - Oscar-->
   <h3>Portal Placement</h3>
   <p>
     The portal placement is calculated by casting a ray from where the player clicks. We check for collisions
@@ -100,7 +99,7 @@
     does allow portals to overlap if targeted right next to the portal, which may cause the portals looks to mix
     together.
   </p>
-  <img class="result" src="images/finalreport/raycasting.png" />
+  <img class="result" src="images/finalreport/raycasting.png"/>
 
   <p>
     The left mouse button spawns the orange portal, while the right mouse button spawns the blue portal.
@@ -108,7 +107,7 @@
     If a portal has already spawned in the scene, it will despawn from the original location and respawn to the new
     location.
   </p>
-  <img class="result" src="images/finalreport/both_portals.png" />
+  <img class="result" src="images/finalreport/both_portals.png"/>
 
   <h3>Portal Viewing</h3>
   <p>
@@ -118,9 +117,9 @@
     positioning the camera to the inverse of the player's current position. We must then rotate the camera afterwards.
     This allows us to maintain a nice view in each portal that does not look disjointed.
   </p>
-  <img class="result" src="images/finalreport/portal_cameras.png" />
+  <img class="result" src="images/finalreport/portal_cameras.png"/>
   <p>
-    The math for one portal's camera can be summarized using the following matrix multiplication
+    The math for one portal's camera position can be summarized using the following matrix multiplication
     formula:
     $$ C_{portalCam} = P_{out} T_{yaxis\_180\_flip} P_{in}^{-1} C_{player} $$
     where:
@@ -131,7 +130,7 @@
     </li>
     <li>
       \(P_{out}\) - The local coordinate space to world coordinate
-      space transformation matrix, in terms of the other portal different from the one being looked at.
+      space transformation matrix, in terms of the other portal different from the one being looked at
       In other words, sends <strong>out</strong> the ray tracing from the in portal.
     </li>
     <li>
@@ -139,7 +138,7 @@
     </li>
     <li>
       \(P_{in}\) - The local coordinate space to world coordinate
-      space transformation matrix, in terms of the portal being looked at.
+      space transformation matrix, in terms of the portal being looked at
       In other words, sends <strong>in</strong> the ray tracing to the out portal.
     </li>
     <ul>
@@ -152,6 +151,11 @@
       \(C_{player}\) - The world coordinates of the Player Camera
     </li>
   </ul>
+  <p>
+    It's rotation can then be determined by the following, with the formula 
+    being similar to position but for Rotation instead (noted by the "R" for rotation):
+    $$ R_{portalCam} = R_{outportal} T_{yaxis\_180\_flip} R_{inportal}^{-1} R_{player} $$
+  </p>
 
   <h3>Portals Teleportation</h3>
   <p>
@@ -180,7 +184,7 @@
     </li>
     <li>
       \(P_{in}\) - The local coordinate space to world coordinate
-      space transformation matrix, in terms of the portal being looked at.
+      space transformation matrix, in terms of the portal being looked at
     </li>
     <li>
       \(O_{position\_inportal}\) - The position relative to the in-portal local coordinates
@@ -194,7 +198,7 @@
     </li>
     <li>
       \(P_{out}\) - The local coordinate space to world coordinate
-      space transformation matrix, in terms of the other portal different from the one being looked at.
+      space transformation matrix, in terms of the other portal different from the one being looked at
     </li>
     <li>
       \(O_{new}\) - The new position of the player
@@ -203,10 +207,24 @@
 
   <h3>Recursive Portals</h3>
   <p>
-    We create recursive portals by rendering a subportal by
-  </p>
+    We create recursive portals by rendering a subportal up to a limit set by us (we used 7).
+    The implementation for this is very similar to that of Portal Viewing, but in the perspective
+    of the portal that is being recursed upon. The math is the same thing as when viewing the portal.
 
+    We do this up to the current recursion depth so that the camera is angled and positioned properly
+    for that specific step. We could have saved the matrix calculations to save on time, but we didn't
+    have time to make that.
+  </p>
+  <img class="result" src="images/finalreport/recursivePortals.png"/>
+  <p>
+    The math will be as follows:
+    $$ C_{{inportalCam}_{(t + 1)}} = P_{out} T_{yaxis\_180\_flip} P_{in}^{-1} C_{{inportalCam}_{(t)}} $$
+    where \(t = 0\) starts off from \(C_{{inportalCam}_{(0)}}\) calculated starting from the Player Camera as written in Portal Viewing.
+    We stop once we reach \(t\) = recursiveLimit.
+  </p>
+  
   <h3>Object Shaders on Portals and Objects</h3>
+  <img class="result" src="images/finalreport/livey_scene.png"/>
   <p>The equation we used for the Blinn-Phong shader:
     $$L = (k_a * I_a) + (k_d * (I /r^2) * max(0, n * l)) + (k_s * (I/r^2) * max(0, n * h) ^ p)$$
   </p>
@@ -215,7 +233,7 @@
     surface shader that wraps objects in light. We first calculate a Fresnel coefficient by taking the dot product of
     the view direction and the normal of the object's vertex. ka, kd, and ks are the ambiance, diffuse, and spectural
     coefficients respectively.
-    I/r^2 is the irradiance from the light source to the vertex we are sampling. n is the normal of the point and l is
+    \(I/r^2\) is the irradiance from the light source to the vertex we are sampling. n is the normal of the point and l is
     the magnitude of the light source to the vertex.
   </p>
   <p>
@@ -238,35 +256,29 @@
 
   <h3>Problems Encountered</h3>
   <p>
-    One problem we encountered when implementing the glowing fresnel shader was that we wanted to apply a similar
-    appearance to the portals, but the effect carried over poorly from the capsule to the flat portal plane. The fresnel
-    shader was effective on round capsules because the glowing effect becomes more pronounced as the surface gradually
-    curves away from the viewer. However, because portals are flat and generally face the player directly, the fresnel
-    shader had little effect on the appearance of the portals. To resolve this, we implemented a second shader for
+    One problem we encountered when implementing the emissive portal shader was that the glowing fresnel shader carried over poorly directly from the capsule to the flat portal plane. The fresnel
+    shader was effective on round capsules because the glowing effect becomes more pronounced as the surface
+    curves away from the viewer. However, it was ineffective on flat portals that generally face the player directly. To resolve this, we implemented a second shader for
     portals that uses UV coordinates to detect proximity to an edge and adjust emitted color accordingly.
   </p>
   <p>
     Another problem overall was the lack of resources on how to write unity shaders. Many of the online examples of
     shaders we wanted to implement or tried to gain inspiration from were done using
-    the built in shader lab in unity. They didn't provide any equations that they used to base their shader off of.
-    Since we wanted to code up the shader to practice what we learned in project 4, it made things difficult. Even in
-    tutorials that had well defined equations,
-    such as the Blinn-Phong shader, we struggled due to lack of documentation. We weren't sure what parameters were
-    needed and what types they were, which made the simple Blinn Phong shader a lot harder to implement. We did get help
-    from Mark Zhang for shaders, bless his soul and sorry Mark for all the questions, but all the other issues we ran
-    into
-    caused us to only be able to implement three shaders in total. It's a bit disappointing we couldn't implement more,
-    but regardless we are still happy and proud with what we accomplished.
+    the built in shader lab in unity. They didn't provide any equations that they used to base their shader off of. 
+    Even in tutorials that had well defined equations, we struggled due to lack of documentation. We weren't sure what parameters were
+    needed and what their types were, which made shaders a lot harder to implement than expected. We did get help
+    from Mark Zhang, bless his soul. All these issues we ran into caused us to only be able to implement three shaders in total. 
+    It's a bit disappointing we couldn't implement more, but regardless we are still happy and proud with what we accomplished.
   </p>
   <p>
-    Occasionally, the player would travel straight through a portal and not teleport out of the other connected portal. One cause of this problem was our reliance on Unity's built-in Character Controller for movement. The Character Controller does not like having sudden drastic changes in the player's position which portal teleportation requires. Additionally, it checks every frame for input and updates the player's position based on the input. Thus, the framerate of the game will affect whether or not the player will teleport. Our solution to this problem was to run the teleport code in Unity's FixedUpdate which runs at a fixed interval and can run several times per frame. This is much better as the framerate does not affect whether or not the player will teleport, and the teleportation code happens separately from the Character Controller code.
+    Occasionally, the player would travel straight through a portal and not teleport out of the other connected portal. One cause of this problem was that teleportation checks every frame for input and updates the player's position based on the input. Thus, the framerate of the game will affect whether or not the player will teleport. Our solution to this problem was to run the teleport code in Unity's FixedUpdate which runs at a fixed interval and can run several times per frame. This is much better as the framerate does not affect whether or not the player will teleport.
   </p>
   <p>
     Speaking of framerate, our portal views were causing performance issues on some of our machines. The performance issue was further compounded with recursive portal rendering. Thus, we had to implement a few compromises to our portals. One compromise was to reduce the recursion depth on our recursive portal rendering. At a loss of being able to see more of the same portal, the player will notice an increase in performance. Another compromise was to lower the resolution on the views being rendered on the portals. While a drastic increase in performance, there is a definite noticeable decrease in quality when looking at the rendered views on the portals.
     <!-- Could add how portal renders only within view or certain radius for performance if needed - Raymond -->
   </p>
   <p>
-    Rendering recursive portal views was tough to implement. There were many problems that arose during the implementation. One problem was getting the sub portals to render in the proper position. Additionally, this had to be done in real-time; otherwise, the deeper sub portals would move out of sync with the closer portals. Our solution was to reassign the original camera rendering the portal view multiple times with the same offset applied each time.
+    There were many problems that arose during the implementation of recursive portals. One problem was getting the sub portals to render in the proper position in real-time because otherwise the deeper sub-portals would move out of sync with the closer portals. Our solution was to reassign the original camera rendering the portal view multiple times with the same offset applied each time.
   </p>
 
   <h3>Lessons Learned</h3>
@@ -355,40 +367,47 @@
   <h2 id="contributions">Team Member Contributions</h2>
   <ul>
     <li><strong>Oscar Chan</strong></li>
-    <li>
-      <p>
-        <!-- TODO: Oscar -->
-        Oscar worked on recursive portals and
-
-        Additional contributions were made to each of the deliverables such as the proposal, milestone status report,
-        final presentation, and final report webpage.
-      </p>
-    </li>
+    <ul>
+      <li>
+        <p>
+          <!-- TODO: Oscar -->
+          Oscar worked on portal design, recursive portals, and portals shader.
+          Additional contributions were made to each of the deliverables such as the proposal, milestone status report,
+          final presentation, and final report webpage.
+        </p>
+      </li>
+    </ul>
     <li><strong>Raymond Chau</strong></li>
-    <li>
-      <p>
-        Raymond worked on implementing portal placement, portal teleportation, and updating the portal views. Additional
-        contributions were made to each of the deliverables such as the proposal, milestone status report, final
-        presentation, and final report webpage.
-      </p>
-    </li>
+    <ul>
+      <li>
+        <p>
+          Raymond worked on implementing portal placement, portal teleportation, and updating the portal views. Additional
+          contributions were made to each of the deliverables such as the proposal, milestone status report, final
+          presentation, and final report webpage.
+        </p>
+      </li>
+    </ul>
     <li><strong>Daniel Molina</strong></li>
-    <li>
-      <p>
-        Daniel worked on movement with Ashley, implementing shaders, and despawning portals out of view/respawning them
-        when in view again as an optimization.
-        Additional contributions were made to each of the deliverables such as the proposal, milestone status report,
-        final presentation, and final report webpage.
-      </p>
-    </li>
+    <ul>
+      <li>
+        <p>
+          Daniel worked on movement with Ashley, implementing shaders, and despawning portals out of view/respawning them
+          when in view again as an optimization.
+          Additional contributions were made to each of the deliverables such as the proposal, milestone status report,
+          final presentation, and final report webpage.
+        </p>
+      </li>
+    </ul>
     <li><strong>Ashley Zhang</strong></li>
-    <li>
-      <p>
-        Ashley worked on implementing player and camera movement, implementing shaders with Daniel, constructing the
-        demo Unity scene, and recording and editing all videos. Additional contributions were made to each of the
-        deliverables such as the proposal, milestone status report, final presentation, and final report webpage.
-      </p>
-    </li>
+    <ul>
+      <li>
+        <p>
+          Ashley worked on implementing player and camera movement, implementing shaders with Daniel, constructing the
+          demo Unity scene, and recording and editing all videos. Additional contributions were made to each of the
+          deliverables such as the proposal, milestone status report, final presentation, and final report webpage.
+        </p>
+      </li>
+    </ul>
   </ul>
 
   <h2 id="slides">Slides</h2>
