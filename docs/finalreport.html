@@ -2,8 +2,46 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-white sticky" style="z-index:99;">
+    <div class="container-fluid">
+      <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#abstract">Abstract</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#techapproach">Technical Approach</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#results">Results</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#references">References</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contributions">Contributions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#video">Video</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#slides">Slides</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
   <style>
     /* h1, h2 {
@@ -20,6 +58,30 @@
       margin: 20px;
     } */
 
+    body {
+      margin: auto 10%;
+    }
+
+    @media print {
+      .d-print-none {
+        display: none!important;
+      }
+
+      body {
+        margin: 0%;
+      }
+
+      img {
+        width: 50%;
+        display: block;
+        margin: auto;
+      }
+    }
+
+    h1 {
+      text-align: center;
+    }
+
     #team {
       display: block;
       padding: auto;
@@ -35,6 +97,12 @@
     a.navigation {
       margin-right: 50px;
     }
+
+    .sticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+    }
   </style>
 
   <script id="MathJax-script" async=async
@@ -44,31 +112,7 @@
 <body>
   <h1>Portals Project Final Report</h1>
 
-  <table>
-    <tr style="vertical-align:top; width:100%">
-      <td style="padding-left:100px;">
-        <h2>Team members</h2>
-        <ul style="list-style-type:none">
-          <li id="team">Oscar Chan</li>
-          <li id="team">Raymond Chau</li>
-          <li id="team">Daniel Molina</li>
-          <li id="team">Ashley Zhang</li>
-        </ul>
-      </td>
-      <td style="padding-left:100px;">
-        <h2>Table of Contents</h2>
-        <ul style="list-style-type:none">
-          <li><a href="#abstract" class="navigation">Abstract</a></li>
-          <li><a href="#techapproach" class="navigation">Technical Approach</a></li>
-          <li><a href="#results" class="navigation">Results</a></li>
-          <li><a href="#references" class="navigation">References</a></li>
-          <li><a href="#contributions" class="navigation">Team Member Contributions</a></li>
-          <li><a href="#slides" class="navigation">Slides</a></li>
-          <li><a href="#video" class="navigation">Video</a></li>
-        </ul>
-      </td>
-    </tr>
-  </table>
+  <h5 style="text-align: center;">Oscar Chan, Raymond Chau, Daniel Molina, Ashley Zhang</h5>
 
   <h2 id="abstract">Abstract</h2>
   <p>
@@ -88,7 +132,7 @@
 
   <h2 id="techapproach">Technical Approach</h2>
   <!-- Done: Bullet 1 - Oscar-->
-  <h3>Portal Placement</h3>
+  <h4>Portal Placement</h4>
   <p>
     The portal placement is calculated by casting a ray from where the player clicks. We check for collisions
     from the ray to an object. If the ray collides with an object, then we place a portal down on the object with a
@@ -99,7 +143,7 @@
     does allow portals to overlap if targeted right next to the portal, which may cause the portals looks to mix
     together.
   </p>
-  <img class="result" src="images/finalreport/raycasting.png"/>
+  <img class="img-fluid mx-auto d-block" src="images/finalreport/raycasting.png"/>
 
   <p>
     The left mouse button spawns the orange portal, while the right mouse button spawns the blue portal.
@@ -107,9 +151,9 @@
     If a portal has already spawned in the scene, it will despawn from the original location and respawn to the new
     location.
   </p>
-  <img class="result" src="images/finalreport/both_portals.png"/>
+  <img class="img-fluid mx-auto d-block" src="images/finalreport/both_portals.png"/>
 
-  <h3>Portal Viewing</h3>
+  <h4>Portal Viewing</h4>
   <p>
     For being able to see through the portals, we employ a couple of camera tricks. We have two cameras set up, one for
     each portal. Each of these cameras relays what they are viewing to its partner portal. We must
@@ -117,7 +161,7 @@
     positioning the camera to the inverse of the player's current position. We must then rotate the camera afterwards.
     This allows us to maintain a nice view in each portal that does not look disjointed.
   </p>
-  <img class="result" src="images/finalreport/portal_cameras.png"/>
+  <img class="img-fluid mx-auto d-block" src="images/finalreport/portal_cameras.png"/>
   <p>
     The math for one portal's camera position can be summarized using the following matrix multiplication
     formula:
@@ -157,7 +201,7 @@
     $$ R_{portalCam} = R_{outportal} T_{yaxis\_180\_flip} R_{inportal}^{-1} R_{player} $$
   </p>
 
-  <h3>Portals Teleportation</h3>
+  <h4>Portals Teleportation</h4>
   <p>
     When the player enters the portal, it should teleport them to the other portal. Our implementation uses a collider to
     detect when the player touches the portal and then teleports the player to the other portal, while keeping the orientation
@@ -205,7 +249,7 @@
     </li>
   </ul>
 
-  <h3>Recursive Portals</h3>
+  <h4>Recursive Portals</h4>
   <p>
     We create recursive portals by rendering a subportal up to a limit set by us (we used 7).
     The implementation for this is very similar to that of Portal Viewing, but in the perspective
@@ -215,7 +259,7 @@
     for that specific step. We could have saved the matrix calculations to save on time, but we didn't
     have time to make that.
   </p>
-  <img class="result" src="images/finalreport/recursivePortals.png"/>
+  <img class="img-fluid mx-auto d-block" src="images/finalreport/recursivePortals.png"/>
   <p>
     The math will be as follows:
     $$ C_{{inportalCam}_{(t + 1)}} = P_{out} T_{yaxis\_180\_flip} P_{in}^{-1} C_{{inportalCam}_{(t)}} $$
@@ -223,8 +267,8 @@
     We stop once we reach \(t\) = recursiveLimit.
   </p>
   
-  <h3>Object Shaders on Portals and Objects</h3>
-  <img class="result" src="images/finalreport/livey_scene.png"/>
+  <h4>Object Shaders on Portals and Objects</h4>
+  <img class="img-fluid mx-auto d-block" src="images/finalreport/livey_scene.png"/>
   <p>The equation we used for the Blinn-Phong shader:
     $$L = (k_a * I_a) + (k_d * (I /r^2) * max(0, n * l)) + (k_s * (I/r^2) * max(0, n * h) ^ p)$$
   </p>
@@ -254,7 +298,7 @@
   </p>
 
 
-  <h3>Problems Encountered</h3>
+  <h4>Problems Encountered</h4>
   <p>
     One problem we encountered when implementing the emissive portal shader was that the glowing fresnel shader carried over poorly directly from the capsule to the flat portal plane. The fresnel
     shader was effective on round capsules because the glowing effect becomes more pronounced as the surface
@@ -281,7 +325,7 @@
     There were many problems that arose during the implementation of recursive portals. One problem was getting the sub portals to render in the proper position in real-time because otherwise the deeper sub-portals would move out of sync with the closer portals. Our solution was to reassign the original camera rendering the portal view multiple times with the same offset applied each time.
   </p>
 
-  <h3>Lessons Learned</h3>
+  <h4>Lessons Learned</h4>
   <p>
     As a result of working on this project, we have learned many lessons. One major lesson was learning how to develop in Unity with version control. As a result, we learned how to handle merge conflicts with Unity assets and especially Unity scenes. Additionally, we learned how to utilize software engineering principles to organize and prioritize tasks. We would setup a document that plans what we need to prioritize along with stretch goals to split the work among us. Furthermore, we learned how to implement shaders in Unity and experimented with converting our Blinn-Phong shader from project 4 into Unity. We learned to develop in C# to implement character movement, portal placement, recursive portal rendering, and portal teleportation.
   </p>
@@ -308,42 +352,43 @@
     WASD to move, left/right click to place portals. If the cursor is off-center or behaving abnormally, press Esc and
     then click within the Unity player to realign the cursor with the mouse. Chrome is recommended.
   </p>
-  <p>
+  <p class="d-print-none">
     <iframe src="https://itch.io/embed/1034404" height="167" width="552" frameborder="0"><a
         href="https://ashz.itch.io/cs184-portals">Spring 2021 CS184 Final Project: Portals by ashz</a></iframe>
   </p>
 
-  <a id="video" href="https://www.youtube.com/watch?v=caV2IXAl5Pk">Final video</a>
-  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/caV2IXAl5Pk"
+  <h2 id="video">Videos</h2>
+  <a href="https://www.youtube.com/watch?v=caV2IXAl5Pk">Final video</a>
+  <div class="embed-responsive embed-responsive-16by9 d-print-none"><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/caV2IXAl5Pk"
       title="YouTube video player" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe></p>
+      allowfullscreen></iframe></div>
 
   <a href="https://www.youtube.com/watch?v=h_QNX0RxF_g">Portal particles</a>
-  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/h_QNX0RxF_g"
+  <div class="embed-responsive embed-responsive-16by9 d-print-none"><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/h_QNX0RxF_g"
       title="YouTube video player" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe></p>
+      allowfullscreen></iframe></div>
 
   <a href="https://www.youtube.com/watch?v=p_YF_CRVbiM">Teleportation</a>
-  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/p_YF_CRVbiM"
+  <div class="embed-responsive embed-responsive-16by9 d-print-none"><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/p_YF_CRVbiM"
       title="YouTube video player" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe></p>
+      allowfullscreen></iframe></div>
 
   <a href="https://www.youtube.com/watch?v=WdHLZFs5WKo">Glowing Fresnel shader</a>
-  <p><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/WdHLZFs5WKo"
+  <div class="embed-responsive embed-responsive-16by9 d-print-none"><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/WdHLZFs5WKo"
       title="YouTube video player" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen></iframe></p>
+      allowfullscreen></iframe></div>
 
   <a href="https://www.youtube.com/watch?v=T6ZgtTQ-hWQ">Additional demo</a>
-  <p>
+  <div class="embed-responsive embed-responsive-16by9 d-print-none">
     <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/T6ZgtTQ-hWQ"
       title="YouTube video player" frameborder="0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowfullscreen></iframe>
-  </p>
+  </div>
 
   <h2 id="references">References</h2>
   <!-- TODO: Everyone -->
@@ -416,10 +461,10 @@
       to slides</a>
   </p>
 
-  <iframe
+  <div class="embed-responsive embed-responsive-16by9 d-print-none"><iframe
     src="https://docs.google.com/presentation/d/e/2PACX-1vTUWi_0nTJRmJIGg3WggWoY0t463AvavfHEf7QnOkBIsnmB6bGxjkcuvYdt1xEBFkxOao4TCp4l6onm/embed?start=false&loop=false&delayms=3000"
     frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true"
-    webkitallowfullscreen="true"></iframe>
+    webkitallowfullscreen="true"></iframe></div>
 
 </body>
 
