@@ -237,13 +237,6 @@
 
 
   <h3>Problems Encountered</h3>
-  <!-- TODO: Raymond Bullet 2 - Problems Encountered: 
-      1. Ashley and Daniel's Shader problem - incorrect shader (unlit shader vs. surface shader)
-      2. Portal Teleportation wouldn't teleport issue - resolved through FixedUpdate
-      3. Portal Lag problem
-      4. Portal flipping issue
-      5. Portal recursive issue - camera perspective not correct for sub portals, had to reassign camera reference
-  -->
   <p>
     One problem we encountered when implementing the glowing fresnel shader was that we wanted to apply a similar
     appearance to the portals, but the effect carried over poorly from the capsule to the flat portal plane. The fresnel
@@ -265,9 +258,21 @@
     caused us to only be able to implement three shaders in total. It's a bit disappointing we couldn't implement more,
     but regardless we are still happy and proud with what we accomplished.
   </p>
+  <p>
+    Occasionally, the player would travel straight through a portal and not teleport out of the other connected portal. One cause of this problem was our reliance on Unity's built-in Character Controller for movement. The Character Controller does not like having sudden drastic changes in the player's position which portal teleportation requires. Additionally, it checks every frame for input and updates the player's position based on the input. Thus, the framerate of the game will affect whether or not the player will teleport. Our solution to this problem was to run the teleport code in Unity's FixedUpdate which runs at a fixed interval and can run several times per frame. This is much better as the framerate does not affect whether or not the player will teleport, and the teleportation code happens separately from the Character Controller code.
+  </p>
+  <p>
+    Speaking of framerate, our portal views were causing performance issues on some of our machines. The performance issue was further compounded with recursive portal rendering. Thus, we had to implement a few compromises to our portals. One compromise was to reduce the recursion depth on our recursive portal rendering. At a loss of being able to see more of the same portal, the player will notice an increase in performance. Another compromise was to lower the resolution on the views being rendered on the portals. While a drastic increase in performance, there is a definite noticeable decrease in quality when looking at the rendered views on the portals.
+    <!-- Could add how portal renders only within view or certain radius for performance if needed - Raymond -->
+  </p>
+  <p>
+    Rendering recursive portal views was tough to implement. There were many problems that arose during the implementation. One problem was getting the sub portals to render in the proper position. Additionally, this had to be done in real-time; otherwise, the deeper sub portals would move out of sync with the closer portals. Our solution was to reassign the original camera rendering the portal view multiple times with the same offset applied each time.
+  </p>
 
   <h3>Lessons Learned</h3>
-  <!-- TODO: Raymond Bullet 3 - Description of lessons learned -->
+  <p>
+    As a result of working on this project, we have learned many lessons. One major lesson was learning how to develop in Unity with version control. As a result, we learned how to handle merge conflicts with Unity assets and especially Unity scenes. Additionally, we learned how to utilize software engineering principles to organize and prioritize tasks. We would setup a document that plans what we need to prioritize along with stretch goals to split the work among us. Furthermore, we learned how to implement shaders in Unity and experimented with converting our Blinn-Phong shader from project 4 into Unity. We learned to develop in C# to implement character movement, portal placement, recursive portal rendering, and portal teleportation.
+  </p>
 
   <h2 id="results">Results</h2>
   <!-- TODO: Ashley -->
