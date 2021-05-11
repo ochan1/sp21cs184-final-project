@@ -89,18 +89,9 @@
 
   <h2 id="techapproach">Technical Approach</h2>
   <!-- TODO: Bullet 1 - Oscar-->
-  <!-- <h3>Portal Placement</h3>
-  <p>
-    This includes being able to place two portals down, look through
-    the portals so the player can see what the other portal sees, and having emission shader's that give life to the
-    scene. The portal placement is calculated by shooting a ray from where the player clicks. We check for collisions
-    from the ray to a plane. If the ray collides with a plane object, then we place a portal down on the plane with a
-    slight offset, so that the portal does not get buried in the plane.
-  </p> -->
-
   <h3>Portal Placement</h3>
   <p>
-    The portal placement is calculated by shooting a ray from where the player clicks. We check for collisions
+    The portal placement is calculated by casting a ray from where the player clicks. We check for collisions
     from the ray to an object. If the ray collides with an object, then we place a portal down on the object with a
     slight offset, so that the portal does not get buried in the object.
   </p>
@@ -109,12 +100,15 @@
     does allow portals to overlap if targeted right next to the portal, which may cause the portals looks to mix
     together.
   </p>
+  <img class="result" src="images/finalreport/raycasting.png" />
+
   <p>
     The left mouse button spawns the orange portal, while the right mouse button spawns the blue portal.
     The portals are deactivated and hidden at the start, then activated at the first click of either.
     If a portal has already spawned in the scene, it will despawn from the original location and respawn to the new
     location.
   </p>
+  <img class="result" src="images/finalreport/both_portals.png" />
 
   <h3>Portal Viewing</h3>
   <p>
@@ -124,14 +118,92 @@
     positioning the camera to the inverse of the player's current position. We must then rotate the camera afterwards.
     This allows us to maintain a nice view in each portal that does not look disjointed.
   </p>
-
+  <img class="result" src="images/finalreport/portal_cameras.png" />
+  <p>
+    The math for one portal's camera can be summarized using the following matrix multiplication
+    formula:
+    $$ C_{portalCam} = P_{out} T_{yaxis\_180\_flip} P_{in}^{-1} C_{player} $$
+    where:
+  </p>
+  <ul>
+    <li>
+      \(C_{portalCam}\) - The world space portal camera coordinates
+    </li>
+    <li>
+      \(P_{out}\) - The local coordinate space to world coordinate
+      space transformation matrix, in terms of the other portal different from the one being looked at.
+      In other words, sends <strong>out</strong> the ray tracing from the in portal.
+    </li>
+    <li>
+      \(T_{yaxis\_180\_flip}\) - Flips the camera around by 180 degrees so the transformed object is behind the portal.
+    </li>
+    <li>
+      \(P_{in}\) - The local coordinate space to world coordinate
+      space transformation matrix, in terms of the portal being looked at.
+      In other words, sends <strong>in</strong> the ray tracing to the out portal.
+    </li>
+    <ul>
+      <li>
+        We use the inverse of this matrix to create a conversion of the camera's world coodinate to the
+        "in" portal's local coordinates.
+      </li>
+    </ul>
+    <li>
+      \(C_{player}\) - The world coordinates of the Player Camera
+    </li>
+  </ul>
 
   <h3>Portals Teleportation</h3>
-  <p></p>
+  <p>
+    When the player enters the portal, it should teleport them to the other portal. Our implementation uses a collider to
+    detect when the player touches the portal and then teleports the player to the other portal, while keeping the orientation
+    of the player.
+  </p>
+  <p>
+    When teleporting the player through the portal, two things are calculated: position and rotation.
+  </p>
+  <p>
+    For position, we take the player's coordinates in terms of the entry portal and transform that to the destination portal
+    with a small forward offset applied.
+  </p>
+  <p>
+    The math for calculating the player's teleported position can be summarized using the following matrix multiplication
+    formula:
+    $$ O_{position\_inportal} = P_{in}^{-1} O_{prev} $$
+    $$ smallFwdOffset = {teleportOffset} * {outPortal\_forward\_vector} $$
+    $$ O_{new} = P_{out} O_{position\_inportal} + smallFwdOffset $$
+    where:
+  </p>
+  <ul>
+    <li>
+      \(O_{prev}\) - The world space portal camera coordinates, before teleport
+    </li>
+    <li>
+      \(P_{in}\) - The local coordinate space to world coordinate
+      space transformation matrix, in terms of the portal being looked at.
+    </li>
+    <li>
+      \(O_{position\_inportal}\) - The position relative to the in-portal local coordinates
+    </li>
+    <li>
+      teleportOffset - a offset multiplier to move the player in front of the portal to avoid
+      repeated collision and clipthrough with portal
+    </li>
+    <li>
+      outPortal_forward_vector - the 3D Unit Vector that defines the front face direction of the portal
+    </li>
+    <li>
+      \(P_{out}\) - The local coordinate space to world coordinate
+      space transformation matrix, in terms of the other portal different from the one being looked at.
+    </li>
+    <li>
+      \(O_{new}\) - The new position of the player
+    </li>
+  </ul>
 
   <h3>Recursive Portals</h3>
   <p>
-    We create recursive portals by rendering
+    We create recursive portals by rendering a subportal by
   </p>
 
   <h3>Object Shaders on Portals and Objects</h3>
